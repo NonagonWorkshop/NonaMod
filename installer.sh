@@ -30,7 +30,7 @@ sleep 1
 
 
 log "Installation complete!"
-echo -e "${YELLOW}Made by Star_destroyer11 And less so StarkMist111960${RESET}"
+echo -e "${YELLOW}Made by Star_destroyer11 ${RESET}"
 echo -e "${GREEN}MushM installed. Have Fun${RESET}"
 sleep 2
 
