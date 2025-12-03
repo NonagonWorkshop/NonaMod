@@ -22,7 +22,7 @@ mount -o remount,rw /
 download_and_install() {
   URL="$1"
   OUT="$2"
-  TIMEOUT_SEC=10
+  TIMEOUT_SEC=60
   if curl --max-time $TIMEOUT_SEC -fL "$URL" -o "$OUT"; then
     chmod +x "$OUT"
     echo "Installed $OUT"
