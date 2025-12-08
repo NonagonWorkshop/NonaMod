@@ -57,9 +57,10 @@ e2fsck -f /dev/mmcblk1p5
 
 ## Disable RootFS Verification (if sudo /usr/share/vboot/bin/make_dev_ssd.sh -i /dev/mmcblk0 --remove_rootfs_verification --partitions 2 (or --partitions 4) does not work)
 
-step 1: Open **VT2 Shell**
+1. Open **VT2 Shell**
+2. Log in as root.
 
-step 2: cd /usr/share/vboot/bin
+3. cd /usr/share/vboot/bin
 
-step 3: sudo -E /usr/share/vboot/bin/make_dev_ssd.sh --partitions 2
+4. sudo -E /usr/share/vboot/bin/make_dev_ssd.sh --partitions 2
 
