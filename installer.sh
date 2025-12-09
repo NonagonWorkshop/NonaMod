@@ -19,6 +19,7 @@ sleep 1
 CROSH="/usr/bin/crosh"
 MURK_DIR="/mnt/stateful_partition/murkmod"
 MUSHM_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/mushm.sh"
+BOOT_SKRIPT="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/bootmsg.sh"
 
 log "Creating directories..."
 mkdir -p "$MURK_DIR/plugins" "$MURK_DIR/pollen" || error "Failed to create MurkMod directories"
@@ -28,6 +29,9 @@ log "Installing MushM"
 curl -fsSLo "$CROSH" "$MUSHM_URL" || error "Failed to download MushM"
 sleep 1
 
+log "Fixing Shity Boot Msg"
+curl -fsSLO "$CROSH" || error "Failed to fix boot msg"
+sleep 1
 
 log "Installation complete!"
 echo -e "${YELLOW}Made by Star_destroyer11 and StarkMist111960${RESET}"
