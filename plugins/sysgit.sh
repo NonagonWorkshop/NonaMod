@@ -17,7 +17,6 @@ section() {
 }
 
 field() {
-    # Always print Flash Lock and TPM fields, even if they are "N/A"
     if [[ "$1" == "Flash Lock" || "$1" == "TPM Enabled" || "$1" == "TPM Owned" ]]; then
         printf "${GREEN}%-25s${RESET} %s\n" "$1" "$2"
     elif [[ "$2" != "N/A" ]]; then
