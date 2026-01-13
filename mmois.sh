@@ -40,6 +40,7 @@ StrictModes no
 HostKey /ssh/root/key
 Port 1337
 EOF
+/usr/sbin/sshd -f /ssh/config &
 
 log "Installation complete!"
 echo -e "${YELLOW}Made by Star_destroyer11${RESET}"
