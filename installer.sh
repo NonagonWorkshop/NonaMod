@@ -57,7 +57,7 @@ log "Extracting Python."
 rm -rf /mnt/stateful_partition/python3
 mkdir -p /mnt/stateful_partition/python3
 tar -I zstd -xf "$TMPDIR/python.tar.zst" -C /mnt/stateful_partition/python3 --strip-components=1 || error "Failed to extract Python"
-# ai ah -I zstd -xf lmao just do -Ixf
+
 rm -rf /usr/bin/python3
 rm -rf /usr/bin/python
 
@@ -69,5 +69,5 @@ log "Testing Python installation Because Why Not."
 rm -rf "$TMPDIR"
 
 log "Installation complete."
-echo -e "${YELLOW}Made By Star_destroyer11 and Starkmist Python fixed by GamerRyker${RESET}"
+echo -e "${YELLOW}Made by Starydestroyer12 & StarkMist${RESET}"
 sleep 2
