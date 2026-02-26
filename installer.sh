@@ -64,7 +64,7 @@ rm -rf /usr/bin/python
 ln -sf /mnt/stateful_partition/python3/bin/python3 /usr/bin/python3
 ln -sf /mnt/stateful_partition/python3/bin/python3 /usr/bin/python
 
-log "Testing Python installation Because Why Not."
+log "Testing Python installation."
 
 rm -rf "$TMPDIR"
 
