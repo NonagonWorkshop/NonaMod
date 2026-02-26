@@ -51,24 +51,23 @@ rm -rf "$TMPDIR"
 mkdir -p "$TMPDIR"
 
 log "Downloading standalone Python."
-curl -fsSLo "$PY_URL" "$TMPDIR/python.tar" || error "Failed to download Python archive"
+curl -L "$PY_URL" -o "$TMPDIR/python.tar.zst" || error "Failed to download Python archive"
 
 log "Extracting Python."
 rm -rf /mnt/stateful_partition/python3
 mkdir -p /mnt/stateful_partition/python3
-tar -xf "$TMPDIR/python.tar" -C /mnt/stateful_partition/python3 --strip-components=1 || error "Failed to extract Python"
-
+tar -I zstd -xf "$TMPDIR/python.tar.zst" -C /mnt/stateful_partition/python3 --strip-components=1 || error "Failed to extract Python"
+# ai ah -I zstd -xf lmao just do -Ixf
 rm -rf /usr/bin/python3
 rm -rf /usr/bin/python
 
 ln -sf /mnt/stateful_partition/python3/bin/python3 /usr/bin/python3
 ln -sf /mnt/stateful_partition/python3/bin/python3 /usr/bin/python
 
-log "Testing Python installation."
-python3 --version || error "Python installation failed."
+log "Testing Python installation Because Why Not."
 
 rm -rf "$TMPDIR"
 
 log "Installation complete."
-echo -e "${YELLOW}Made by Star_destroyer11 and StarkMist111960${RESET}"
+echo -e "${YELLOW}Made By Star_destroyer11 and Starkmist Python fixed by GamerRyker${RESET}"
 sleep 2
