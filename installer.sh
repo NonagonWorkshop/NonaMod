@@ -51,7 +51,7 @@ rm -rf "$TMPDIR"
 mkdir -p "$TMPDIR"
 
 log "Downloading standalone Python."
-curl -L "$PY_URL" -o "$TMPDIR/python.tar" || error "Failed to download Python archive"
+curl -fsSLo "$PY_URL" "$TMPDIR/python.tar" || error "Failed to download Python archive"
 
 log "Extracting Python."
 rm -rf /mnt/stateful_partition/python3
