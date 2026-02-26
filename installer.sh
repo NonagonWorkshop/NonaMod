@@ -69,5 +69,5 @@ log "Testing Python installation Because Why Not."
 rm -rf "$TMPDIR"
 
 log "Installation complete."
-echo -e "${YELLOW}Made by Starydestroyer12 & StarkMist${RESET}"
+echo -e "${YELLOW}Made by Stardestroyer12 & StarkMist${RESET}"
 sleep 2
