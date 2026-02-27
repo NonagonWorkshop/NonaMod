@@ -944,7 +944,7 @@ attempt_restore_backup_backup() {
 }
 
 attempt_install_chromebrew() {
-    doas 'sudo -i -u chronos curl -Ls https://raw.githubusercontent.com/chromebrew/chromebrew/master/install.sh | bash' # kinda works now with cros_debug
+    doas 'sudo -i -u chronos curl -Ls git.io/vddgY && . ~/.bashrc | bash' # kinda works now with cros_debug
     read -p 'Press enter to exit'
 }
 
