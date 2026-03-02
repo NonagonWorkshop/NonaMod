@@ -179,6 +179,7 @@ EOF
         26) runjob run_firmware_util ;;
         27) runjob do_updates && exit 0 ;;
         28) runjob do_mushm_update ;;
+        29) runjob gbb_flag-inator ;;
         401) runjob backup ;;
         400) runjob do_dev_updates && exit 0 ;;
         101) runjob hard_disable_nokill ;;
