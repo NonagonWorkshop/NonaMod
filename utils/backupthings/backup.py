@@ -10,11 +10,15 @@ timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
 backup_file = os.path.join(BACKUP_DIR, f"mushm_backup_{timestamp}.tar.gz")
 
 with tarfile.open(backup_file, "w:gz") as tar:
-    for folder in ["plugins","pollen"]:
+    for folder in ["plugins", "pollen"]:
         path = os.path.join(MURK_DIR, folder)
         if os.path.exists(path):
             tar.add(path, arcname=folder)
-    for file, arc in [("/usr/bin/crosh","crosh"), ("/sbin/chromeos_startup","chromeos_startup")] [("/etc/opt/chrome/policies/managed")]:
+    for file, arc in [
+        ("/usr/bin/crosh", "crosh"),
+        ("/sbin/chromeos_startup", "chromeos_startup"),
+        ("/etc/opt/chrome/policies/managed", "managed_policies"),
+    ]:
         if os.path.exists(file):
             tar.add(file, arcname=arc)
 
