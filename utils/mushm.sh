@@ -989,7 +989,6 @@ attempt_gbb_flags() {
     echo "Setting GBB flags to 0x9d..."
     doas 'futility gbb -s --flash --flags=0x9d'
     read -p 'Press enter to exit'
-}
 
 }
 
