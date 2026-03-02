@@ -14,7 +14,7 @@ with tarfile.open(backup_file, "w:gz") as tar:
         path = os.path.join(MURK_DIR, folder)
         if os.path.exists(path):
             tar.add(path, arcname=folder)
-    for file, arc in [("/usr/bin/crosh","crosh"), ("/sbin/chromeos_startup","chromeos_startup")]:
+    for file, arc in [("/usr/bin/crosh","crosh"), ("/sbin/chromeos_startup","chromeos_startup")] [("/")]:
         if os.path.exists(file):
             tar.add(file, arcname=arc)
 
