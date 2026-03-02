@@ -112,7 +112,7 @@ main() {
 (1) Root Shell                     (26) Firmware Utility
 (2) Chronos Shell                  (27) Check for updates Murkmod
 (3) Crosh                          (28) Check for updates MushM
-(4) Plugins                        
+(4) Plugins                        (29) [EXPERIMENTAL] Backup your configs/pollices
 (5) Install plugins                                
 (6) Uninstall plugins
 (7) Powerwash
@@ -167,6 +167,7 @@ EOF
         26) runjob run_firmware_util ;;
         27) runjob do_updates && exit 0 ;;
         28) runjob do_mushm_update ;;
+        28) runjob backup ;;
         400) runjob do_dev_updates && exit 0 ;;
         101) runjob hard_disable_nokill ;;
         111) runjob hard_enable_nokill ;;
@@ -184,6 +185,28 @@ EOF
         208) runjob api_ls_dir ;;
         209) runjob api_cd ;;
     
+        *) echo && echo "Invalid option." && echo ;;
+        esac
+    done
+}
+
+backup() {
+    traps
+    mushm_info
+    while true; do
+        echo -ne "\033]0;mushm\007"
+        cat <<-EOF
+(1) Backup         
+(2) Load            
+(3) List                       
+EOF
+        
+        swallow_stdin
+        read -r -p "> (1-3): " choice
+        case "$choice" in
+        1) runjob bub ;;
+        2) runjob bul;;
+        3) runjob buli;;
         *) echo && echo "Invalid option." && echo ;;
         esac
     done
