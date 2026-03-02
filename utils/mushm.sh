@@ -124,7 +124,7 @@ main() {
 (1) Root Shell                     (26) Firmware Utility
 (2) Chronos Shell                  (27) Check for updates Murkmod
 (3) Crosh                          (28) Check for updates MushM
-(4) Plugins                        (29) Set GBB Flags
+(4) Plugins                        (29) Set GBB flags
 (5) Install plugins                              
 (6) Uninstall plugins
 (7) Powerwash
