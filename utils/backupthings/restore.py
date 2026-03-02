@@ -1,16 +1,25 @@
 #!/usr/bin/env python3
-import os, tarfile, sys
+import os, tarfile
+from datetime import datetime
 
-if len(sys.argv) != 2:
-    print("Usage: restore.py <backup_file>")
-    exit(1)
+MURK_DIR = "/mnt/stateful_partition/murkmod"
+BACKUP_DIR = os.path.join(MURK_DIR, "backups")
+os.makedirs(BACKUP_DIR, exist_ok=True)
 
-backup_file = sys.argv[1]
-if not os.path.exists(backup_file):
-    print(f"Backup file not found: {backup_file}")
-    exit(1)
+timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+backup_file = os.path.join(BACKUP_DIR, f"mushm_backup_{timestamp}.tar.gz")
 
-with tarfile.open(backup_file, "r:gz") as tar:
-    tar.extractall(path="/")
+with tarfile.open(backup_file, "w:gz") as tar:
+    for folder in ["plugins", "pollen"]:
+        path = os.path.join(MURK_DIR, folder)
+        if os.path.exists(path):
+            tar.add(path, arcname=folder)
+    for file, arc in [
+        ("/usr/bin/crosh", "crosh"),
+        ("/sbin/chromeos_startup", "chromeos_startup"),
+        ("/etc/opt/chrome/policies/managed", "managed_policies"),
+    ]:
+        if os.path.exists(file):
+            tar.add(file, arcname=arc)
 
-print(f"Backup restored from {backup_file}")
+print(f"Backup created: {backup_file}")
