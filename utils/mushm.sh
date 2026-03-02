@@ -60,6 +60,18 @@ runjob() {
     trap '' INT
     clear
 }
+
+runpy() {
+    clear
+    trap 'kill -2 $! >/dev/null 2>&1' INT
+    (
+        python3 "$@"
+    ) &
+    wait $!
+    trap '' INT
+    clear
+}
+
 swallow_stdin() {
     while read -t 0 notused; do
         read input
