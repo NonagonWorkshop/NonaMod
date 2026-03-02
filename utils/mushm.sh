@@ -110,7 +110,7 @@ EOF
         fgter) runjob dev_fix ;;
 
 
-        *) echo && echo "Invalid option, T-T" && echo ;;
+        *) echo && echo "Invalid option" && echo ;;
         esac
     done
 }
