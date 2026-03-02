@@ -25,10 +25,10 @@ curl -fsSLo "$CROSH" "$MUSHM_URL" || error "Failed to download MushM."
 curl -fsSLo "$BOOT_DIR" "$BOOT_SCRIPT" || error "Failed to download boot script."
 chmod +x "$BOOT_DIR"
 
-mkdir -p /mnt/stateful_partition/murkmod/py/backup && \
-curl -L -O --output-dir /mnt/stateful_partition/murkmod/py/backup https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/backupthings/backup.py &&
-curl -L -O --output-dir /mnt/stateful_partition/murkmod/py/backup https://example.com/file2.zip &&
-curl -L -O --output-dir /mnt/stateful_partition/murkmod/py/backup https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/backupthings/list.py
+# mkdir -p /mnt/stateful_partition/murkmod/py/backup && \
+# curl -LO --output-dir /mnt/stateful_partition/murkmod/py/backup https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/backupthings/backup.py &&
+# curl -LO --output-dir /mnt/stateful_partition/murkmod/py/backup https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/backupthings/restore.py &&
+# curl -LO --output-dir /mnt/stateful_partition/murkmod/py/backup https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/backupthings/list_backups.py
 
 ARCH=$(uname -m)
 if [ "$ARCH" = "x86_64" ]; then
