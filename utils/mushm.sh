@@ -145,7 +145,7 @@ main() {
 (22) [EXPERIMENTAL] Update ChromeOS
 (23) [EXPERIMENTAL] Update Emergency Backup
 (24) [EXPERIMENTAL] Restore Emergency Backup Backup
-(25) [EXPERIMENTAL] Install Chromebrew
+(25) [WORKS] Install Chromebrew
 EOF
         
         swallow_stdin
