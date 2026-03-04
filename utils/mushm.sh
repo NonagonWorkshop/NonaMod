@@ -124,7 +124,7 @@ main() {
 (1) Root Shell                     (26) Firmware Utility
 (2) Chronos Shell                  (27) Check for updates Murkmod
 (3) Crosh                          (28) Check for updates MushM
-(4) Plugins                        (29) Set GBB flags
+(4) Plugins                       
 (5) Install plugins                              
 (6) Uninstall plugins
 (7) Powerwash
@@ -179,7 +179,6 @@ EOF
         26) runjob run_firmware_util ;;
         27) runjob do_updates && exit 0 ;;
         28) runjob do_mushm_update ;;
-        29) runjob attempt_gbb_flags ;;
         401) runjob backup ;;
         400) runjob do_dev_updates && exit 0 ;;
         101) runjob hard_disable_nokill ;;
@@ -982,12 +981,6 @@ attempt_restore_backup_backup() {
 attempt_chromebrew_install() {
     echo "Installing Chromebrew..."
     doas 'sudo -i -u chronos bash -c "bash <(curl -L https://raw.githubusercontent.com/chromebrew/chromebrew/master/install.sh) && . ~/.bashrc"'
-    read -p 'Press enter to exit'
-}
-
-attempt_gbb_flags() {
-    echo "Setting GBB flags to 0x9d..."
-    doas 'futility gbb -s --flash --flags=0x9d'
     read -p 'Press enter to exit'
 
 }
