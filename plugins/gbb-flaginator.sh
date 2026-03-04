@@ -11,7 +11,7 @@ clear
 echo "--- GBB Flag-inator ---"
 
 # 1. Ask for the flags they want to set
-read -p "What flags do you want to set? (e.g., 0x9d): " gbb_flags
+read -p "What flags do you want to set? (e.g. 0x9d): " gbb_flags
 
 # 2. Check if they entered anything
 if [ -z "$gbb_flags" ]; then
