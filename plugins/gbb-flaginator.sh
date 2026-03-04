@@ -1,37 +1,33 @@
 #!/bin/bash
 # menu_plugin
 PLUGIN_NAME="GBB Flag-inator"
-PLUGIN_FUNCTION="Set GBB Flags"
+PLUGIN_FUNCTION="set_gbb_flags"
 PLUGIN_DESCRIPTION="Edit your GBB flags and set them to a specific order"
 PLUGIN_AUTHOR="BinBashBanana"
 PLUGIN_VERSION=1
 
-# Take the code in the function you have above
-Set GBB Flags() {
-    # Clear the screen because it will let you see better ofc
+# I guess the name must match the function lol
+set_gbb_flags() {
     clear
     echo "--- GBB Flag-inator ---"
     
-    # Prompt the user and ask what flags they want set like 0x9d
     read -p "What flags do you want to set? (e.g., 0x9d): " gbb_flags
 
     if [ -z "$gbb_flags" ]; then
         echo "No flags entered. Returning to menu..."
         sleep 2
-        return 1
+        return
     fi
 
-    echo "Setting GBB flags to $gbb_flags..."
+    echo "Attempting to set GBB flags to $gbb_flags..."
     
-    # Run the command
-    # Note: R117+ Chromeos requires VT2 (Ctrl+Alt+F2) for sudo/futility command crap
+    # Use futility to talk to sudo and whatnot
     if sudo futility gbb -s --flash --flags="$gbb_flags"; then
-        echo "GBB flags updated successfully."
+        echo "Success! GBB flags updated."
     else
-        echo "Error: Failed to set flags. Is write-protect disabled?"
+        echo "Error: Failed to set flags. Make sure Write-Protect is OFF."
     fi
     
-    # Make sure they read results before letting them exit
     echo "Press Enter to return to the menu."
     read
 }
