@@ -9,7 +9,7 @@ PLUGIN_VERSION=1
 set_gbb_flags() {
     # 1. Ask the person for input
     # Ask the question or whatever'
-    read -p "What flags do you want to set? (e.g., 0x9d): " gbb_flags
+    read -p "What flags do you want to set? (e.g. 0x9d): " gbb_flags
 
     # 2. Check if the user entered any input
     if [ -z "$gbb_flags" ]; then
