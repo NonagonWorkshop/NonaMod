@@ -1,13 +1,14 @@
-# Murk Mod Plugins & Mush Installer
+# NonaMod
 
-Welcome, we are the team behind **Murk Mod Plugins** and the modified version of **Mush**.  
-This installer sets up the MurkMod plugin environment and installs our enhanced Mush system.
+Welcome, we are the team behind **Nonamod** and the modified version of **Mush**.  
+This installer sets up the NonaMod environment and installs our better Mush, trust.
 
 > [!WARNING]
-> **This will replace your current Mush installation** with the Nonagon-modified version.  
-> Back up any important data before continuing.
-> **We are not responsible for any damages to your computer** By using any Nonagon-modified software,  
-> You agree to the terms and conditions.
+> Installing NonaMod will **replace your existing Mush installation**.  
+> Back up any important data before proceeding.  
+> Terms and conditions may change at any time.  
+> **We are not responsible for any damage to your system.** By using NonaMod, you agree to these terms.
+
 ---
 
 ## Installation
