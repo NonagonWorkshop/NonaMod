@@ -6,7 +6,6 @@ PLUGIN_DESCRIPTION="Edit your GBB flags and set them to a specific order to allo
 PLUGIN_AUTHOR="BinBashBanana"
 PLUGIN_VERSION=1
 
-#!/bin/bash
 
 read -p "What flags do you want to set? (e.g., 0x9d): " gbb_flags
 
