@@ -65,7 +65,7 @@ runpy() {
     clear
     trap 'kill -2 $! >/dev/null 2>&1' INT
     (
-        python3 "$@"
+        doas "sudo -i -u chronos -- bash -l -c 'python3 \"$@\"'"
     ) &
     wait $!
     trap '' INT
@@ -202,12 +202,6 @@ EOF
         esac
     done
 }
-
-test() {
-doas "sudo -i -u chronos -- bash -l -c 'clear; cd /home/chronos; cd /mnt/stateful_partition/murkmod/plugins; python3 python_test_plugin.py'"
- read -p "testing"
-}
-
 
 backup() {
     traps
@@ -472,14 +466,14 @@ show_plugins() {
             bash "$selected_file"
             ;;
         *.py)
-           # doas "sudo -i -u chronos python3 "$selected_file"" 2>/dev/null
-            doas "cd /home/chronos; sudo -i -u chronos" 2>/dev/null && cd plugins_dir && python3 "$selected_file"
+            doas "sudo -i -u chronos -- bash -l -c 'cd /mnt/stateful_partition/murkmod/plugins; python3 \"$selected_file\"'" 2>/dev/null
             ;;
         *)
             echo "Unsupported plugin type: $selected_file"
             return 1
             ;;
     esac
+
 }
 
 
