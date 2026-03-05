@@ -204,7 +204,7 @@ EOF
 }
 
 test() {
-doas "sudo -i -u chronos bash -lc 'clear; cd /mnt/stateful_partition/murkmod/plugins; python3 python_test_plugin.py'"
+doas "sudo -i -u chronos -- bash -l -c 'clear; cd /home/chronos; cd /mnt/stateful_partition/murkmod/plugins; python3 python_test_plugin.py'"
  read -p "testing"
 }
 
