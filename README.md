@@ -66,3 +66,10 @@ e2fsck -f /dev/mmcblk1p5
 
 4. sudo -E /usr/share/vboot/bin/make_dev_ssd.sh --partitions 2
 
+## Fix plugin noexec error
+
+```bash
+sudo umount -l /mnt/stateful_partition
+sudo mount -o rw,exec /dev/mmcblk1p1 /mnt/stateful_partition
+```
+
