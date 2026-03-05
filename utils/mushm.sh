@@ -204,7 +204,8 @@ EOF
 }
 
 test() {
- doas "cd /home/chronos; sudo -i -u chronos" 2>/dev/null && cd plugins_dir && python3 /mnt/stateful_partition/murkmod/plugins/python_test_plugin.py
+ doas "cd /home/chronos; sudo -i -u chronos && cd /mnt/stateful_partition/murkmod/plugins && python3 /mnt/stateful_partition/murkmod/plugins/python_test_plugin.py" 2>/dev/null 
+ read -p testing
 }
 
 
