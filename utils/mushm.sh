@@ -196,7 +196,6 @@ EOF
         207) runjob api_rm_dir ;;
         208) runjob api_ls_dir ;;
         209) runjob api_cd ;;
-        210) runjob test ;;
     
         *) echo && echo "Invalid option." && echo ;;
         esac
@@ -389,8 +388,6 @@ enable_dev_boot_usb() {
   sed -i 's/\(dev_boot_usb=\).*/\11/' /usr/bin/crossystem
 }
 
-
-
 do_updates() {
     doas "bash <(curl -SLk https://raw.githubusercontent.com/rainestorme/murkmod/main/murkmod.sh)"
     exit
@@ -466,7 +463,7 @@ show_plugins() {
             bash "$selected_file"
             ;;
         *.py)
-            doas "sudo -i -u chronos -- bash -l -c 'cd /mnt/stateful_partition/murkmod/plugins; python3 \"$selected_file\"'" 2>/dev/null
+            doas "sudo -i -u chronos -- bash -l -c 'clear; cd /home/chronos; cd /mnt/stateful_partition/murkmod/plugins; python3 \"$(basename "$selected_file")\"'"
             ;;
         *)
             echo "Unsupported plugin type: $selected_file"
