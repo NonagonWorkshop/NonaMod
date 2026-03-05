@@ -6,7 +6,7 @@ PLUGIN_VERSION="1.0"
 
 def test_python_plugin():
     print("Python plugin Working")
-    imput("Press ENTER to continue...")
+    input("Press ENTER to continue...")
 
 
 if __name__ == "__main__":
