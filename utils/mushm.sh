@@ -47,7 +47,7 @@ EOF
 }
 
 doas() {
-    ssh -t -p 1337 -i /rootkey -oStrictHostKeyChecking=no root@127.0.0.1 "$@"
+    ssh -tt -p 1337 -i /rootkey -oStrictHostKeyChecking=no root@127.0.0.1 "$@"
 }
 
 runjob() {
