@@ -204,9 +204,9 @@ EOF
 }
 
 test() {
-doas "sudo -i -u chronos python3 /mnt/stateful_partition/murkmod/plugins/python_test_plugin.py"
-read -p "test"
+    doas "sudo -i -u chronos python3 /mnt/stateful_partition/murkmod/plugins/python_test_plugin.py" 2>/dev/null
 }
+
 
 backup() {
     traps
@@ -471,7 +471,7 @@ show_plugins() {
             bash "$selected_file"
             ;;
         *.py)
-            doas "sudo -i -u chronos python3 "$selected_file""
+            doas "sudo -i -u chronos python3 "$selected_file"" 2>/dev/null
             ;;
         *)
             echo "Unsupported plugin type: $selected_file"
