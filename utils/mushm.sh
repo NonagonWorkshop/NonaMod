@@ -464,7 +464,7 @@ show_plugins() {
             bash "$selected_file"
             ;;
         *.py)
-            sudo -u chronos python3 "$selected_file"
+            doas "sudo -u chronos python3 "$selected_file""
             ;;
         *)
             echo "Unsupported plugin type: $selected_file"
