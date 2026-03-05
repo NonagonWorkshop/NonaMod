@@ -407,14 +407,11 @@ show_plugins() {
 
     [[ -d "$plugins_dir" ]] || { echo "Plugins directory does not exist."; return 1; }
 
-    # Collect plugin files
     while IFS= read -r -d '' file; do
         plugin_files+=("$file")
-    done < <(find "$plugins_dir" -type f -name "*.sh" -print0)
+    done < <(find "$plugins_dir" -type f \( -name "*.sh" -o -name "*.py" \) -print0)
 
-    # Read metadata for each plugin
     for plugin_script in "${plugin_files[@]}"; do
-        # Only read first 200 lines
         mapfile -t meta < <(head -n 200 "$plugin_script" | sed 's/\r$//')
 
         local name="<no name>"
@@ -431,7 +428,6 @@ show_plugins() {
             [[ "$line" =~ ^[[:space:]]*PLUGIN_VERSION[[:space:]]*=[[:space:]]*(.*)$ ]] && ver="${BASH_REMATCH[1]//\"/}" && ver="${ver//\'/}"
         done
 
-        # Include plugin if it has the menu marker or a function
         if [[ $menu_marker -eq 1 || -n "$func" ]]; then
             plugin_info+=("$name|$func|$author|$ver")
             plugin_map+=("$plugin_script")
@@ -443,17 +439,14 @@ show_plugins() {
         return 0
     fi
 
-    # Print header
     printf "# %-25s %-35s %-20s %-10s\n" "Name" "Function" "Author" "Version"
     printf -- "------------------------------------------------------------------------------------------------------\n"
 
-    # Print each plugin
     for i in "${!plugin_info[@]}"; do
         IFS='|' read -r name func author ver <<< "${plugin_info[$i]}"
         printf "%-3s %-25s %-35s %-20s %-10s\n" "$((i+1))" "$name" "$func" "$author" "$ver"
     done
 
-    # Prompt user
     read -p "> Select a plugin (or q to quit): " selection
     selection="${selection//$'\r'/}"
 
@@ -466,9 +459,20 @@ show_plugins() {
 
     local selected_file="${plugin_map[$((selection-1))]}"
 
-    # Run plugin directly (original method)
-    bash <(cat "$selected_file")
+    case "$selected_file" in
+        *.sh)
+            bash "$selected_file"
+            ;;
+        *.py)
+            sudo -u chronos python3 "$selected_file"
+            ;;
+        *)
+            echo "Unsupported plugin type: $selected_file"
+            return 1
+            ;;
+    esac
 }
+
 
 install_plugins() {
     clear
@@ -528,10 +532,11 @@ install_plugins() {
         read -s -n 1 key
 
         case "$key" in
-            "q") break ;;
-            "A") ((selected_option--)) ;;
-            "B") ((selected_option++)) ;;
-            "") clear
+            q) break ;;
+            A) ((selected_option--)) ;;
+            B) ((selected_option++)) ;;
+            "")
+                clear
                 echo "Using URL: ${download_urls[$selected_option]}"
                 echo "Installing plugin..."
                 doas "mkdir -p /mnt/stateful_partition/murkmod/plugins && pushd /mnt/stateful_partition/murkmod/plugins && curl -fsO ${download_urls[$selected_option]} && popd" >/dev/null
@@ -547,30 +552,28 @@ install_plugins() {
     done
 }
 
-
-
 uninstall_plugins() {
     clear
-    
     plugins_dir="/mnt/stateful_partition/murkmod/plugins"
     plugin_files=()
 
     while IFS= read -r -d '' file; do
         plugin_files+=("$file")
-    done < <(find "$plugins_dir" -type f -name "*.sh" -print0)
+    done < <(find "$plugins_dir" -type f \( -name "*.sh" -o -name "*.py" \) -print0)
 
     plugin_info=()
     for file in "${plugin_files[@]}"; do
-        plugin_script=$file
-        PLUGIN_NAME=$(grep -o 'PLUGIN_NAME=.*' "$plugin_script" | cut -d= -f2-)
-        PLUGIN_FUNCTION=$(grep -o 'PLUGIN_FUNCTION=.*' "$plugin_script" | cut -d= -f2-)
-        PLUGIN_DESCRIPTION=$(grep -o 'PLUGIN_DESCRIPTION=.*' "$plugin_script" | cut -d= -f2-)
-        PLUGIN_AUTHOR=$(grep -o 'PLUGIN_AUTHOR=.*' "$plugin_script" | cut -d= -f2-)
-        PLUGIN_VERSION=$(grep -o 'PLUGIN_VERSION=.*' "$plugin_script" | cut -d= -f2-)
+        PLUGIN_NAME=$(grep -o 'PLUGIN_NAME=.*' "$file" | cut -d= -f2-)
+        PLUGIN_FUNCTION=$(grep -o 'PLUGIN_FUNCTION=.*' "$file" | cut -d= -f2-)
+        PLUGIN_DESCRIPTION=$(grep -o 'PLUGIN_DESCRIPTION=.*' "$file" | cut -d= -f2-)
+        PLUGIN_AUTHOR=$(grep -o 'PLUGIN_AUTHOR=.*' "$file" | cut -d= -f2-)
+        PLUGIN_VERSION=$(grep -o 'PLUGIN_VERSION=.*' "$file" | cut -d= -f2-)
+
         PLUGIN_NAME=${PLUGIN_NAME:1:-1}
         PLUGIN_FUNCTION=${PLUGIN_FUNCTION:1:-1}
         PLUGIN_DESCRIPTION=${PLUGIN_DESCRIPTION:1:-1}
         PLUGIN_AUTHOR=${PLUGIN_AUTHOR:1:-1}
+
         plugin_info+=("$PLUGIN_NAME (version $PLUGIN_VERSION by $PLUGIN_AUTHOR)")
     done
 
@@ -594,19 +597,19 @@ uninstall_plugins() {
         fi
 
         index=$(($choice-1))
-
         if [ "$index" -lt 0 ] || [ "$index" -ge ${#plugin_info[@]} ]; then
             echo "Invalid choice."
             continue
         fi
 
         plugin_file="${plugin_files[$index]}"
+
         PLUGIN_NAME=$(grep -o 'PLUGIN_NAME=".*"' "$plugin_file" | cut -d= -f2-)
         PLUGIN_FUNCTION=$(grep -o 'PLUGIN_FUNCTION=".*"' "$plugin_file" | cut -d= -f2-)
         PLUGIN_DESCRIPTION=$(grep -o 'PLUGIN_DESCRIPTION=".*"' "$plugin_file" | cut -d= -f2-)
         PLUGIN_AUTHOR=$(grep -o 'PLUGIN_AUTHOR=".*"' "$plugin_file" | cut -d= -f2-)
         PLUGIN_VERSION=$(grep -o 'PLUGIN_VERSION=".*"' "$plugin_file" | cut -d= -f2-)
-        # remove quotes
+
         PLUGIN_NAME=${PLUGIN_NAME:1:-1}
         PLUGIN_FUNCTION=${PLUGIN_FUNCTION:1:-1}
         PLUGIN_DESCRIPTION=${PLUGIN_DESCRIPTION:1:-1}
@@ -619,7 +622,9 @@ uninstall_plugins() {
             doas rm "$plugin_file"
             echo "$plugin_name uninstalled."
             unset plugin_info[$index]
+            unset plugin_files[$index]
             plugin_info=("${plugin_info[@]}")
+            plugin_files=("${plugin_files[@]}")
         fi
     done
 }
