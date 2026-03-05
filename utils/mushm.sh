@@ -196,10 +196,16 @@ EOF
         207) runjob api_rm_dir ;;
         208) runjob api_ls_dir ;;
         209) runjob api_cd ;;
+        210) runjob test ;;
     
         *) echo && echo "Invalid option." && echo ;;
         esac
     done
+}
+
+test() {
+doas "sudo -i -u chronos python3 /mnt/stateful_partition/murkmod/plugins/python_test_plugin.py"
+read -p "test"
 }
 
 backup() {
@@ -285,6 +291,7 @@ api_cd() {
 
 reboot() {
 doas "reboot"
+
 }
 
 do_dev_updates() {
