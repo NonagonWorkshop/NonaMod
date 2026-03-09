@@ -29,7 +29,7 @@ hash=$(sha256sum "$image_path" | cut -d ' ' -f 1)
 new_json="{\"hash\": \"$hash\", \"url\": \"file://$image_path\"}"
 
 # Update the "WallpaperImage" key in the JSON file with the new values
-json_file="/etc/opt/chrome/policies/managed/polygon_policy.json"
+json_file="/etc/opt/chrome/policies/managed/policy.json"
 if grep -q "\"WallpaperImage\":" "$json_file"; then
     # "WallpaperImage" key already exists in the JSON file, update its value
     sed -i "s/\(\"WallpaperImage\":{\).*\(:{.*\)\(}\)/\1$new_json\3/" "$json_file"
