@@ -1,25 +1,36 @@
 #!/usr/bin/env python3
-import os, tarfile
+import os, tarfile, time
 from datetime import datetime
 
-MURK_DIR = "/mnt/stateful_partition/murkmod"
-BACKUP_DIR = os.path.join(MURK_DIR, "backups")
-os.makedirs(BACKUP_DIR, exist_ok=True)
+ROOT = "/mnt/stateful_partition/murkmod"
+BACK = ROOT + "/backups"
 
-timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-backup_file = os.path.join(BACKUP_DIR, f"mushm_backup_{timestamp}.tar.gz")
+if not os.path.isdir(BACK):
+    print("No backup directory found:", BACK)
+    raise SystemExit(1)
 
-with tarfile.open(backup_file, "w:gz") as tar:
-    for folder in ["plugins", "pollen"]:
-        path = os.path.join(MURK_DIR, folder)
-        if os.path.exists(path):
-            tar.add(path, arcname=folder)
-    for file, arc in [
-        ("/usr/bin/crosh", "crosh"),
-        ("/sbin/chromeos_startup", "chromeos_startup"),
-        ("/etc/opt/chrome/policies/managed", "managed_policies"),
-    ]:
-        if os.path.exists(file):
-            tar.add(file, arcname=arc)
+items = []
+for f in os.listdir(BACK):
+    if f.startswith("mushm_backup_") and f.endswith(".tar.gz"):
+        items.append(f)
 
-print(f"Backup created: {backup_file}")
+if not items:
+    print("No backups found in", BACK)
+    raise SystemExit(1)
+
+items.sort()
+latest = items[-1]
+path = os.path.join(BACK, latest)
+
+print("Restoring from:", path)
+
+with tarfile.open(path, "r:gz") as tar:
+    names = tar.getnames()
+    for n in names:
+        try:
+            tar.extract(n, ROOT)
+        except:
+            pass
+    time.sleep(0.15)
+
+print("Restore complete from:", latest)
