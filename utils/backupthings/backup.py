@@ -1,17 +1,47 @@
 #!/usr/bin/env python3
-import os, tarfile
+import os, tarfile, time
 from datetime import datetime
-MURK_DIR = "/mnt/stateful_partition/murkmod"
-BACKUP_DIR = os.path.join(MURK_DIR, "backups")
-os.makedirs(BACKUP_DIR, exist_ok=True)
-timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-backup_file = os.path.join(BACKUP_DIR, f"mushm_backup_{timestamp}.tar.gz")
-with tarfile.open(backup_file, "w:gz") as tar:
-    for folder in ["plugins","pollen"]:
-        path = os.path.join(MURK_DIR, folder)
+
+BASE = "/mnt/stateful_partition/murkmod"
+BACK = BASE + "/backups"
+if not os.path.isdir(BACK):
+    try:
+        os.makedirs(BACK)
+    except:
+        pass
+
+t = datetime.now().strftime("%Y%m%d-%H%M%S")
+pid = str(os.getpid())
+mix = str(int(time.time()))[-6:]
+name = "mushm_backup_" + t + "_" + pid + "_" + mix + ".tar.gz"
+out = BACK + "/" + name
+
+targets = [
+    ("plugins", BASE + "/plugins"),
+    ("pollen", BASE + "/pollen"),
+    ("crosh", "/usr/bin/crosh"),
+    ("chromeos_startup", "/sbin/chromeos_startup"),
+]
+
+mp = "/etc/opt/chrome/policies/managed"
+if os.path.exists(mp):
+    targets.append(("managed_policies", mp))
+
+with tarfile.open(out, "w:gz") as tar:
+    for arc, path in targets:
         if os.path.exists(path):
-            tar.add(path, arcname=folder)
-    for file, arc in [("/usr/bin/crosh","crosh"), ("/sbin/chromeos_startup","chromeos_startup")] [("/etc/opt/chrome/policies/managed")]:
-        if os.path.exists(file):
-            tar.add(file, arcname=arc)
-print(f"Backup created: {backup_file}")
+            if os.path.isdir(path):
+                for root, dirs, files in os.walk(path):
+                    for d in dirs:
+                        p = os.path.join(root, d)
+                        a = arc + "/" + os.path.relpath(p, path)
+                        tar.add(p, arcname=a)
+                    for f in files:
+                        p = os.path.join(root, f)
+                        a = arc + "/" + os.path.relpath(p, path)
+                        tar.add(p, arcname=a)
+            else:
+                tar.add(path, arcname=arc)
+    time.sleep(0.1)
+
+print("Backup created:", out)
