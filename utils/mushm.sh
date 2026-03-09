@@ -203,28 +203,6 @@ EOF
     done
 }
 
-backup() {
-    traps
-    mushm_info
-    while true; do
-        echo -ne "\033]0;mushm\007"
-        cat <<-EOF
-(1) Backup         
-(2) Load            
-(3) List                       
-EOF
-        
-        swallow_stdin
-        read -r -p "> (1-3): " choice
-        case "$choice" in
-        1) runjob bub ;;
-        2) runjob bul;;
-        3) runjob buli;;
-        *) echo && echo "Invalid option." && echo ;;
-        esac
-    done
-}
-
 api_read_file() {
     echo "file to read?"
     read -r filename
