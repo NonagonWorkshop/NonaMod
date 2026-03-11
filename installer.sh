@@ -145,3 +145,4 @@ log "Starting SSH daemon"
 
 log "Installation complete!"
 echo -e "${YELLOW}Made by Star_destroyer11${RESET}"
+pause 5
