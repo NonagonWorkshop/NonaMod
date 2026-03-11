@@ -126,6 +126,7 @@ chmod 644 "$KEY1.pub" "$KEY2.pub"
 log "Copying keys to /rootkey and /rootkey2"
 cp "$KEY1" /rootkey
 cp "$KEY2" /rootkey2
+chown chronos:chronos /rootkey /rootkey2
 chmod 600 /rootkey /rootkey2
 
 log "Creating SSH config"
