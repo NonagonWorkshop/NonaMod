@@ -25,7 +25,8 @@ bash <(curl -fsSL https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/main
 ```bash
 + FM Util Script
 + Reboot
-+ Tetris
++ Python plugin support
++ Backing up configs/setting
 ```
 ---
 
