@@ -373,56 +373,7 @@ do_updates() {
 }
 
 do_mushm_update() {
-    GREEN="\e[32m"; YELLOW="\e[33m"; RED="\e[31m"; RESET="\e[0m"
-    log(){ echo -e "${GREEN}[✔]${RESET} $1"; }
-    warn(){ echo -e "${YELLOW}[!]${RESET} $1"; }
-    error(){ echo -e "${RED}[✖]${RESET} $1" >&2; exit 1; }
-
-    [ "$EUID" -ne 0 ] && error "You must run this script as root."
-
-    BASE="/mnt/stateful_partition/murkmod"
-    VERDIR="$BASE/version"
-    VERFILE="$VERDIR/version.txt"
-
-    CROSH="/usr/bin/crosh"
-    BOOT="/sbin/chromeos_startup"
-
-    MUSHM="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/mushm.sh"
-    BOOTMSG="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/bootmsg.sh"
-    VERURL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/version.txt"
-
-    log "Checking for updates..."
-
-    touch /usr/bin/.rwtest 2>/dev/null || {
-        rm -f /usr/bin/dev_install 2>/dev/null
-        /usr/share/vboot/bin/make_dev_ssd.sh --remove_rootfs_verification --force
-        reboot
-        exit
-    }
-    rm -f /usr/bin/.rwtest
-
-    mkdir -p "$VERDIR"
-
-    [ ! -f "$VERFILE" ] && { warn "No local version found."; echo "0" > "$VERFILE"; }
-
-    LOCAL="$(cat "$VERFILE")"
-    REMOTE="$(curl -fsSL "$VERURL")"
-
-    [ "$LOCAL" = "$REMOTE" ] && { log "Already up to date. Version $LOCAL"; return; }
-
-    log "Update found: $LOCAL → $REMOTE"
-
-    mkdir -p "$(dirname "$CROSH")"
-    curl -fsSL "$MUSHM" -o "$CROSH"
-    head -n 1 "$CROSH" | grep -q '^#!' && chmod +x "$CROSH"
-
-    mkdir -p "$(dirname "$BOOT")"
-    curl -fsSL "$BOOTMSG" -o "$BOOT"
-    head -n 1 "$BOOT" | grep -q '^#!' && chmod +x "$BOOT"
-
-    echo "$REMOTE" > "$VERFILE"
-
-    log "Update complete. Now on version $REMOTE."
+   doas "bash <(curl -fsSL https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/refs/heads/main/installer.sh)"
 }
 
 show_plugins() {
