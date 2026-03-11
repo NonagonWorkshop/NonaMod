@@ -5,88 +5,142 @@ YELLOW="\e[33m"
 RED="\e[31m"
 RESET="\e[0m"
 
-log(){ echo -e "${GREEN}[✔]${RESET} $1"; }
-warn(){ echo -e "${YELLOW}[!]${RESET} $1"; }
-error(){ echo -e "${RED}[✖]${RESET} $1" >&2; exit 1; }
+log()   { echo -e "${GREEN}[✔]${RESET} $1"; }
+warn()  { echo -e "${YELLOW}[!]${RESET} $1"; }
+error() { echo -e "${RED}[✖]${RESET} $1"; exit 1; }
 
-[ "$EUID" -ne 0 ] && error "You must run this script as root."
-
-BASE_DIR="/mnt/stateful_partition/murkmod"
-VERSION_DIR="$BASE_DIR/version"
-VERSION_FILE="$VERSION_DIR/version.txt"
-CROSH="/usr/bin/crosh"
-BOOT_DIR="/sbin/chromeos_startup"
-BACKUP_URL="https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/refs/heads/main/utils/backupthings/backup_manager.py"
-BACKUP_DEST="$BASE/python/util/backup/backup_manager.py"
-MUSHM_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/mushm.sh"
-BOOT_SCRIPT_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/bootmsg.sh"
-VERSION_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/version.txt"
-
-PY_BASE_URL="https://github.com/astral-sh/python-build-standalone/releases/download/20260211"
+[ "$EUID" -ne 0 ] && error "Run as root"
 
 install() {
     url="$1"
     dest="$2"
     mkdir -p "$(dirname "$dest")"
-    curl -fsSL "$url" -o "$dest"
-    if head -n 1 "$dest" | grep -q '^#!'; then chmod +x "$dest"; fi
+    tmp="/tmp/$(basename "$dest").tmp"
+    curl -fsSL "$url" -o "$tmp" || error "Failed to download $url"
+    if ! cmp -s "$tmp" "$dest"; then
+        mv "$tmp" "$dest"
+        head -n 1 "$dest" | grep -q '^#!' && chmod +x "$dest"
+        log "Updated $(basename "$dest")"
+    else
+        rm "$tmp"
+        log "$(basename "$dest") already up to date"
+    fi
 }
 
 ensure_rw() {
     touch /usr/bin/.rwtest 2>/dev/null || {
-        rm -f /usr/bin/dev_install 2>/dev/null
+        rm -f /usr/bin/dev_install
         /usr/share/vboot/bin/make_dev_ssd.sh --remove_rootfs_verification --force
         reboot
-        exit
     }
     rm -f /usr/bin/.rwtest
 }
 
 install_python() {
-    log "Detecting architecture..."
+    if command -v python3 >/dev/null; then
+        log "Python already installed"
+        return
+    fi
+
+    log "Installing Python"
     arch="$(uname -m)"
     case "$arch" in
-        x86_64) py_url="$PY_BASE_URL/cpython-3.15.0a6+20260211-x86_64-unknown-linux-musl-install_only_stripped.tar.gz" ;;
-        aarch64|arm64) py_url="$PY_BASE_URL/cpython-3.15.0a6+20260211-aarch64-unknown-linux-musl-install_only_stripped.tar.gz" ;;
+        x86_64) PY_URL="$PY_BASE/cpython-3.15.0a6+20260211-x86_64-unknown-linux-musl-install_only_stripped.tar.gz" ;;
+        aarch64|arm64) PY_URL="$PY_BASE/cpython-3.15.0a6+20260211-aarch64-unknown-linux-musl-install_only_stripped.tar.gz" ;;
         *) error "Unsupported architecture: $arch" ;;
     esac
+
     tmp="/tmp/python"
     rm -rf "$tmp"
     mkdir -p "$tmp"
-    log "Downloading standalone Python..."
-    curl -fsSL "$py_url" -o "$tmp/python.tar.zst" || error "Failed to download Python."
-    log "Extracting Python..."
+
+    curl -fsSL "$PY_URL" -o "$tmp/python.tar.zst" || error "Python download failed"
     rm -rf /mnt/stateful_partition/python3
     mkdir -p /mnt/stateful_partition/python3
-    tar -I zstd -xf "$tmp/python.tar.zst" -C /mnt/stateful_partition/python3 --strip-components=1 || error "Failed to extract Python."
-    rm -f /usr/bin/python3 /usr/bin/python
+    tar -I zstd -xf "$tmp/python.tar.zst" -C /mnt/stateful_partition/python3 --strip-components=1 || error "Python extract failed"
+
     ln -sf /mnt/stateful_partition/python3/bin/python3 /usr/bin/python3
     ln -sf /mnt/stateful_partition/python3/bin/python3 /usr/bin/python
+
     rm -rf "$tmp"
-    log "Python installation complete."
+    log "Python installed"
 }
 
-log "Starting MushM installer."
+log "Starting MushM Installer"
+
+BASE="/mnt/stateful_partition/murkmod"
+VERDIR="$BASE/version"
+VERFILE="$VERDIR/version.txt"
+CROSH="/usr/bin/crosh"
+BOOT="/sbin/chromeos_startup"
+MUSHM_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/mushm.sh"
+BOOTMSG_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/bootmsg.sh"
+VERSION_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/version.txt"
+BACKUP_URL="https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/main/utils/backupthings/backup_manager.py"
+PY_BASE="https://github.com/astral-sh/python-build-standalone/releases/download/20260211"
 
 ensure_rw
 
-mkdir -p "$BASE_DIR/plugins" "$BASE_DIR/pollen" "$VERSION_DIR"
+log "Creating directories"
+mkdir -p "$BASE/plugins" "$BASE/pollen" "$VERDIR" "$BASE/python/util/backup" /ssh/root
 
-log "Installing MushM..."
+log "Installing MushM"
 install "$MUSHM_URL" "$CROSH"
 
-log "Installing boot script..."
-install "$BOOT_SCRIPT_URL" "$BOOT_DIR"
+log "Installing boot script"
+install "$BOOTMSG_URL" "$BOOT"
 
-log "Installing Python..."
+log "Installing Python"
 install_python
 
-log "Installing backup manager..."
-install "$BACKUP_URL" "$BACKUP_DEST"
+log "Saving version"
+curl -fsSL "$VERSION_URL" -o "$VERFILE" || error "Failed to save version"
 
-log "Saving version..."
-curl -fsSL "$VERSION_URL" -o "$VERSION_FILE" || error "Failed to save version."
+log "Installing backup manager"
+install "$BACKUP_URL" "$BASE/python/util/backup/backup_manager.py"
 
-log "Installation complete."
-echo -e "${YELLOW}Version saved to $VERSION_FILE${RESET}"
-log "Made by The Nonagon team."
+chmod 700 /ssh/root
+
+KEY1="/ssh/root/key"
+KEY2="/ssh/root/key2"
+
+log "Checking SSH keys"
+
+if [ ! -f "$KEY1" ]; then
+    log "Generating key 1"
+    ssh-keygen -t rsa -f "$KEY1" -N '' >/dev/null 2>&1 || error "Key 1 generation failed"
+else
+    log "Key 1 exists"
+fi
+
+if [ ! -f "$KEY2" ]; then
+    log "Generating key 2"
+    ssh-keygen -t rsa -f "$KEY2" -N '' >/dev/null 2>&1 || error "Key 2 generation failed"
+else
+    log "Key 2 exists"
+fi
+
+chmod 600 "$KEY1" "$KEY2"
+chmod 644 "$KEY1.pub" "$KEY2.pub"
+
+log "Copying keys to /rootkey and /rootkey2"
+cp "$KEY1" /rootkey
+cp "$KEY2" /rootkey2
+chmod 600 /rootkey /rootkey2
+
+log "Creating SSH config"
+cat >/ssh/config <<EOF
+AuthorizedKeysFile /ssh/%u/key.pub /ssh/%u/key2.pub
+StrictModes no
+HostKey /ssh/root/key
+HostKey /ssh/root/key2
+Port 1337
+EOF
+
+chmod 600 /ssh/config
+
+log "Starting SSH daemon"
+/usr/sbin/sshd -f /ssh/config || error "Failed to start SSH daemon"
+
+log "Installation complete!"
+echo -e "${YELLOW}Made by Star_destroyer11${RESET}"
