@@ -14,10 +14,10 @@ error(){ echo -e "${RED}[✖]${RESET} $1" >&2; exit 1; }
 BASE_DIR="/mnt/stateful_partition/murkmod"
 VERSION_DIR="$BASE_DIR/version"
 VERSION_FILE="$VERSION_DIR/version.txt"
-
 CROSH="/usr/bin/crosh"
 BOOT_DIR="/sbin/chromeos_startup"
-
+BACKUP_URL="https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/refs/heads/main/utils/backupthings/backup_manager.py"
+BACKUP_DEST="$BASE/python/util/backup/backup_manager.py"
 MUSHM_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/mushm.sh"
 BOOT_SCRIPT_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/bootmsg.sh"
 VERSION_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/version.txt"
@@ -80,6 +80,9 @@ install "$BOOT_SCRIPT_URL" "$BOOT_DIR"
 
 log "Installing Python..."
 install_python
+
+log "Installing backup manager..."
+install "$BACKUP_URL" "$BACKUP_DEST"
 
 log "Saving version..."
 curl -fsSL "$VERSION_URL" -o "$VERSION_FILE" || error "Failed to save version."
