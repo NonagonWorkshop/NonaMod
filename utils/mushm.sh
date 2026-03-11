@@ -125,7 +125,7 @@ main() {
 (1) Root Shell                     (26) Firmware Utility
 (2) Chronos Shell                  (27) Check for updates Murkmod
 (3) Crosh                          (28) Check for updates MushM
-(4) Plugins                        
+(4) Plugins                        (29) Backup Manager
 (5) Install plugins                              
 (6) Uninstall plugins
 (7) Powerwash
@@ -180,7 +180,7 @@ EOF
         26) runjob run_firmware_util ;;
         27) runjob do_updates && exit 0 ;;
         28) runjob do_mushm_update ;;
-        401) runpy /mnt/stateful_partition/murkmod/utils/python/backup/backup_manager.py ;;
+        29) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.py ;;
         400) runjob do_dev_updates && exit 0 ;;
         101) runjob hard_disable_nokill ;;
         111) runjob hard_enable_nokill ;;
