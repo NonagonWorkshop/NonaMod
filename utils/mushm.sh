@@ -181,7 +181,7 @@ EOF
         27) runjob do_updates && exit 0 ;;
         28) runjob do_mushm_update ;;
         29) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.py ;;
-        30) curl -Ls raw.githubusercontent.com/NonagonWokshop/Octagon-Policy-Editor/main/octagon.sh | bash ;;
+        30) curl -Ls raw.githubusercontent.com/NonagonWokshop/Octagon-Policy-Editor/main/octagon.sh | bash && exit 0 ;;
         400) runjob do_dev_updates && exit 0 ;;
         101) runjob hard_disable_nokill ;;
         111) runjob hard_enable_nokill ;;
