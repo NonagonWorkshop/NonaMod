@@ -31,7 +31,7 @@ ensure_rw() {
     touch /usr/bin/.rwtest 2>/dev/null || {
         rm -f /usr/bin/dev_install
         /usr/share/vboot/bin/make_dev_ssd.sh --remove_rootfs_verification --force
-        reboot
+        
     }
     rm -f /usr/bin/.rwtest
 }
@@ -145,4 +145,4 @@ log "Starting SSH daemon"
 
 log "Installation complete!"
 echo -e "${YELLOW}Made by Star_destroyer11${RESET}"
-pause 5
+(sleep 5; reboot) &
