@@ -451,7 +451,6 @@ show_plugins() {
 
 }
 
-
 install_plugins() {
     clear
     echo "Fetching plugin information..."
@@ -925,7 +924,7 @@ attempt_backup_update(){
     echo "Installing root patch to ${rootdev}..."
     doas dd if="${loop}p3" of="$rootdev" status=progress
 
-    echo "Setting crossystem and vpd block_devmode..." # idrk why, but it can't hurt to be safe
+    echo "Setting crossystem and vpd block_devmode..."
     doas crossystem.old block_devmode=0
     doas vpd -i RW_VPD -s block_devmode=0
 
