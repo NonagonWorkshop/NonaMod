@@ -19,15 +19,13 @@ install() {
     tmp="/tmp/$(basename "$dest").tmp"
 
     curl -fsSL "$url" -o "$tmp" || error "Failed to download $url"
-
-    # If dest doesn't exist OR files differ, update
     if [ ! -f "$dest" ] || ! diff "$tmp" "$dest" >/dev/null 2>&1; then
         mv "$tmp" "$dest"
         head -n 1 "$dest" | grep -q '^#!' && chmod +x "$dest"
         log "Updated $(basename "$dest")"
     else
         rm "$tmp"
-        log "$(basename "$dest") already up to date"
+        log "$(basename "$dest") already up to date."
     fi
 }
 
@@ -36,6 +34,7 @@ ensure_rw() {
     touch /usr/bin/.rwtest 2>/dev/null || {
         rm -f /usr/bin/dev_install
         /usr/share/vboot/bin/make_dev_ssd.sh --remove_rootfs_verification --force
+        log "Please reboot and rerun the installer."
         
     }
     rm -f /usr/bin/.rwtest
@@ -43,11 +42,11 @@ ensure_rw() {
 
 install_python() {
     if command -v python3 >/dev/null; then
-        log "Python already installed"
+        log "Python already installed."
         return
     fi
 
-    log "Installing Python"
+    log "Installing Python."
     arch="$(uname -m)"
     case "$arch" in
         x86_64) PY_URL="$PY_BASE/cpython-3.15.0a6+20260211-x86_64-unknown-linux-musl-install_only_stripped.tar.gz" ;;
@@ -68,10 +67,10 @@ install_python() {
     ln -sf /mnt/stateful_partition/python3/bin/python3 /usr/bin/python
 
     rm -rf "$tmp"
-    log "Python installed"
+    log "Python installed."
 }
 
-log "Starting MushM Installer"
+log "Starting MushM Installer."
 
 BASE="/mnt/stateful_partition/murkmod"
 VERDIR="$BASE/version"
@@ -86,22 +85,22 @@ PY_BASE="https://github.com/astral-sh/python-build-standalone/releases/download/
 
 ensure_rw
 
-log "Creating directories"
+log "Creating directories."
 mkdir -p "$BASE/plugins" "$BASE/pollen" "$VERDIR" "$BASE/python/util/backup" /ssh/root
 
-log "Installing MushM"
+log "Installing MushM."
 install "$MUSHM_URL" "$CROSH"
 
-log "Installing boot script"
+log "Installing boot script."
 install "$BOOTMSG_URL" "$BOOT"
 
-log "Installing Python"
+log "Installing Python."
 install_python
 
-log "Saving version"
+log "Saving version."
 curl -fsSL "$VERSION_URL" -o "$VERFILE" || error "Failed to save version"
 
-log "Installing backup manager"
+log "Installing backup manager."
 install "$BACKUP_URL" "$BASE/python/util/backup/backup_manager.py"
 
 chmod 700 /ssh/root
@@ -115,14 +114,14 @@ if [ ! -f "$KEY1" ]; then
     log "Generating key 1"
     ssh-keygen -t rsa -f "$KEY1" -N '' >/dev/null 2>&1 || error "Key 1 generation failed"
 else
-    log "Key 1 exists"
+    log "Key 1 exists."
 fi
 
 if [ ! -f "$KEY2" ]; then
     log "Generating key 2"
     ssh-keygen -t rsa -f "$KEY2" -N '' >/dev/null 2>&1 || error "Key 2 generation failed"
 else
-    log "Key 2 exists"
+    log "Key 2 exists."
 fi
 
 chmod 600 "$KEY1" "$KEY2"
@@ -150,4 +149,3 @@ log "Starting SSH daemon"
 
 log "Installation complete!"
 echo -e "${YELLOW}Made by Star_destroyer11${RESET}"
-(sleep 5; reboot) &
