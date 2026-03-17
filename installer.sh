@@ -14,10 +14,14 @@ error() { echo -e "${RED}[✖]${RESET} $1"; exit 1; }
 install() {
     url="$1"
     dest="$2"
+
     mkdir -p "$(dirname "$dest")"
     tmp="/tmp/$(basename "$dest").tmp"
+
     curl -fsSL "$url" -o "$tmp" || error "Failed to download $url"
-    if ! cmp -s "$tmp" "$dest"; then
+
+    # If dest doesn't exist OR files differ, update
+    if [ ! -f "$dest" ] || ! diff "$tmp" "$dest" >/dev/null 2>&1; then
         mv "$tmp" "$dest"
         head -n 1 "$dest" | grep -q '^#!' && chmod +x "$dest"
         log "Updated $(basename "$dest")"
@@ -26,6 +30,7 @@ install() {
         log "$(basename "$dest") already up to date"
     fi
 }
+
 
 ensure_rw() {
     touch /usr/bin/.rwtest 2>/dev/null || {
