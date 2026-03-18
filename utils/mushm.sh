@@ -164,7 +164,7 @@ EOF
         10) runjob harddisableext ;;
         11) runjob hardenableext ;;
         12) runjob autodisableexts ;;
-        13) runjob edit_octagon ;;
+        13) runjob edit_pollen ;;
         14) runjob install_crouton ;;
         15) runjob run_crouton ;;
         16) runjob enable_dev_boot_usb ;;
