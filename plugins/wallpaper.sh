@@ -38,7 +38,7 @@ fi
 hash=$(md5sum "$image_path" | cut -d ' ' -f 1)
 
 # Update the "DeviceWallpaperImage" key in the JSON file using Python
-json_file="/etc/opt/chrome/policies/managed/policy.json"
+json_file="/etc/opt/chrome/policies/managed/octagon.json"
 
 doas python3 -c "
 import json
