@@ -16,10 +16,11 @@ VERDIR="$BASE/version"
 VERFILE="$VERDIR/version.txt"
 CROSH="/usr/bin/crosh"
 BOOT="/sbin/chromeos_startup"
+
 MUSHM_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/mushm.sh"
 BOOTMSG_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/bootmsg.sh"
 VERSION_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/version.txt"
-BACKUP_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/backupthings/backup_manager.py"
+
 PY_BASE="https://github.com/astral-sh/python-build-standalone/releases/download/20260211"
 
 install() {
@@ -36,6 +37,17 @@ install() {
         rm "$tmp"
         log "$(basename "$dest") already up to date."
     fi
+}
+
+install_folder() {
+    folder="$1"
+    dest="$2"
+    api="https://api.github.com/repos/NonagonWorkshop/Nonamod/contents/$folder"
+    mkdir -p "$dest"
+    curl -fsSL "$api" | grep '"download_url"' | cut -d'"' -f4 | while read -r url; do
+        file="$dest/$(basename "$url")"
+        install "$url" "$file"
+    done
 }
 
 ensure_rw() {
@@ -93,7 +105,10 @@ log "Saving version."
 curl -fsSL "$VERSION_URL" -o "$VERFILE" || error "Failed to save version"
 
 log "Installing backup manager."
-install "$BACKUP_URL" "$BASE/python/util/backup/backup_manager.py"
+install_folder "utils/backupthings" "$BASE/python/util/backup"
+
+log "Installing plugins."
+install_folder "plugins" "$BASE/plugins"
 
 chmod 700 /ssh/root
 
