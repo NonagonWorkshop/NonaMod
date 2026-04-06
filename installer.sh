@@ -11,13 +11,22 @@ error() { echo -e "${RED}[✖]${RESET} $1"; exit 1; }
 
 [ "$EUID" -ne 0 ] && error "Run as root"
 
+BASE="/mnt/stateful_partition/murkmod"
+VERDIR="$BASE/version"
+VERFILE="$VERDIR/version.txt"
+CROSH="/usr/bin/crosh"
+BOOT="/sbin/chromeos_startup"
+MUSHM_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/mushm.sh"
+BOOTMSG_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/bootmsg.sh"
+VERSION_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/version.txt"
+BACKUP_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/backupthings/backup_manager.py"
+PY_BASE="https://github.com/astral-sh/python-build-standalone/releases/download/20260211"
+
 install() {
     url="$1"
     dest="$2"
-
     mkdir -p "$(dirname "$dest")"
     tmp="/tmp/$(basename "$dest").tmp"
-
     curl -fsSL "$url" -o "$tmp" || error "Failed to download $url"
     if [ ! -f "$dest" ] || ! diff "$tmp" "$dest" >/dev/null 2>&1; then
         mv "$tmp" "$dest"
@@ -29,13 +38,12 @@ install() {
     fi
 }
 
-
 ensure_rw() {
     touch /usr/bin/.rwtest 2>/dev/null || {
         rm -f /usr/bin/dev_install
         /usr/share/vboot/bin/make_dev_ssd.sh --remove_rootfs_verification --force
-        log "Please reboot and rerun the installer."
-        
+        log "Rootfs verification removed. Reboot and rerun."
+        exit 0
     }
     rm -f /usr/bin/.rwtest
 }
@@ -45,7 +53,6 @@ install_python() {
         log "Python already installed."
         return
     fi
-
     log "Installing Python."
     arch="$(uname -m)"
     case "$arch" in
@@ -53,40 +60,25 @@ install_python() {
         aarch64|arm64) PY_URL="$PY_BASE/cpython-3.15.0a6+20260211-aarch64-unknown-linux-musl-install_only_stripped.tar.gz" ;;
         *) error "Unsupported architecture: $arch" ;;
     esac
-
     tmp="/tmp/python"
     rm -rf "$tmp"
     mkdir -p "$tmp"
-
     curl -fsSL "$PY_URL" -o "$tmp/python.tar.zst" || error "Python download failed"
     rm -rf /mnt/stateful_partition/python3
     mkdir -p /mnt/stateful_partition/python3
     tar -I zstd -xf "$tmp/python.tar.zst" -C /mnt/stateful_partition/python3 --strip-components=1 || error "Python extract failed"
-
     ln -sf /mnt/stateful_partition/python3/bin/python3 /usr/bin/python3
     ln -sf /mnt/stateful_partition/python3/bin/python3 /usr/bin/python
-
     rm -rf "$tmp"
     log "Python installed."
 }
 
 log "Starting MushM Installer."
 
-BASE="/mnt/stateful_partition/murkmod"
-VERDIR="$BASE/version"
-VERFILE="$VERDIR/version.txt"
-CROSH="/usr/bin/crosh"
-BOOT="/sbin/chromeos_startup"
-MUSHM_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/mushm.sh"
-BOOTMSG_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/bootmsg.sh"
-VERSION_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/version.txt"
-BACKUP_URL="https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/main/utils/backupthings/backup_manager.py"
-PY_BASE="https://github.com/astral-sh/python-build-standalone/releases/download/20260211"
-
 ensure_rw
 
 log "Creating directories."
-mkdir -p "$BASE/plugins" "$BASE/pollen" "$VERDIR" "$BASE/python/util/backup" /ssh/root
+mkdir -p "$BASE/plugins" "$BASE/pollen" "$VERDIR" "$BASE/python/util/backup" /ssh /ssh/root
 
 log "Installing MushM."
 install "$MUSHM_URL" "$CROSH"
@@ -108,10 +100,10 @@ chmod 700 /ssh/root
 KEY1="/ssh/root/key"
 KEY2="/ssh/root/key2"
 
-log "Checking SSH keys"
+log "Checking SSH keys."
 
 if [ ! -f "$KEY1" ]; then
-    log "Generating key 1"
+    log "Generating key 1."
     ssh-keygen -t rsa -f "$KEY1" -N '' >/dev/null 2>&1 || error "Key 1 generation failed"
 else
     log "Key 1 exists."
@@ -133,7 +125,7 @@ cp "$KEY2" /rootkey2
 chown chronos:chronos /rootkey /rootkey2
 chmod 600 /rootkey /rootkey2
 
-log "Creating SSH config"
+log "Creating SSH config."
 cat >/ssh/config <<EOF
 AuthorizedKeysFile /ssh/%u/key.pub /ssh/%u/key2.pub
 StrictModes no
@@ -144,8 +136,8 @@ EOF
 
 chmod 600 /ssh/config
 
-log "Starting SSH daemon"
-/usr/sbin/sshd -f /ssh/config || error "Failed to start SSH daemon"
+log "Starting SSH daemon."
+/usr/sbin/sshd -f /ssh/config || error "Failed to start SSH daemon."
 
 log "Installation complete!"
 echo -e "${YELLOW}Made by Star_destroyer11${RESET}"
