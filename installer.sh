@@ -59,7 +59,10 @@ install_folder() {
 ensure_rw() {
     touch /usr/bin/.rwtest 2>/dev/null || {
         rm -f /usr/bin/dev_install
-        /usr/share/vboot/bin/make_dev_ssd.sh --remove_rootfs_verification --force
+            /usr/share/vboot/bin/make_dev_ssd.sh -i /dev/mmcblk0 --remove_rootfs_verification --partitions 2
+            /usr/share/vboot/bin/make_dev_ssd.sh -i /dev/mmcblk0 --remove_rootfs_verification --partitions 4
+            /usr/share/vboot/bin/make_dev_ssd.sh -i /dev/mmcblk1 --remove_rootfs_verification --partitions 2
+            /usr/share/vboot/bin/make_dev_ssd.sh -i /dev/mmcblk1 --remove_rootfs_verification --partitions 4
         log "Rootfs verification removed. Reboot and rerun."
         exit 0
     }
