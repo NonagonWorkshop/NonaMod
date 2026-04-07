@@ -16,11 +16,11 @@ VERDIR="$BASE/version"
 VERFILE="$VERDIR/version.txt"
 CROSH="/usr/bin/crosh"
 BOOT="/sbin/chromeos_startup"
-
+WACHDOGDIR="/mnt/stateful_partition/murkmod/watchdog.sh"
 MUSHM_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/mushm.sh"
 BOOTMSG_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/bootmsg.sh"
 VERSION_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/version.txt"
-
+WATCHDOG="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/watchdog/watchdog.sh"
 PY_BASE="https://github.com/astral-sh/python-build-standalone/releases/download/20260211"
 
 install() {
