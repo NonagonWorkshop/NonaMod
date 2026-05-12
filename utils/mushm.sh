@@ -119,88 +119,150 @@ EOF
 main() {
     traps
     mushm_info
+
+    RED="$(tput setaf 1)"
+    GREEN="$(tput setaf 2)"
+    YELLOW="$(tput setaf 3)"
+    BLUE="$(tput setaf 4)"
+    MAGENTA="$(tput setaf 5)"
+    CYAN="$(tput setaf 6)"
+    BOLD="$(tput bold)"
+    RESET="$(tput sgr0)"
+
+    strip() {
+        echo -e "$1" | sed 's/\x1B\[[0-9;]*[mK]//g'
+    }
+
     while true; do
         echo -ne "\033]0;mushm\007"
-        cat <<-EOF
-(1) Root Shell                     (26) Firmware Utility
-(2) Chronos Shell                  (27) Check for updates Murkmod
-(3) Crosh                          (28) Check for updates MushM
-(4) Plugins                        (29) Backup Manager
-(5) Install plugins                (30) [EXPERIMENTAL] Install Arch Chroot
-(6) Uninstall plugins              (31) [EXPERIMENTAL] Install Gento Dev Env
-(7) Powerwash
-(8) Emergency Revert & Re-Enroll
-(9) Soft Disable Extensions
-(10) Hard Disable Extensions
-(11) Hard Enable Extensions
-(12) Automagically Disable Extensions
-(13) Edit Pollen
-(14) Install Crouton
-(15) Start Crouton
-(16) Enable dev_boot_usb
-(17) Disable dev_boot_usb
-(18) Set mushm password
-(19) Remove mushm password
-(20) Reboot (wait 5s)
-(21) [EXPERIMENTAL] Install Gentoo Bootstrap (dev_install)
-(22) [EXPERIMENTAL] Update ChromeOS
-(23) [EXPERIMENTAL] Update Emergency Backup
-(24) [EXPERIMENTAL] Restore Emergency Backup Backup
-(25) [EXPERIMENTAL] Install Chromebrew
-EOF
-        
-        swallow_stdin
-        read -r -p "> (1-30): " choice
+        clear
+
+        cols=$(tput cols)
+        border="$(printf '═%.0s' $(seq 1 $((cols - 2))))"
+
+        echo "${CYAN}╔${border}╗${RESET}"
+
+        title=" MushM "
+        printf "${CYAN}║%*s%*s║${RESET}\n" \
+            $(((${#title} + cols - 2) / 2)) "$title" \
+            $((cols - 2 - ((${#title} + cols - 2) / 2))) ""
+
+        echo "${CYAN}╠${border}╣${RESET}"
+
+        options=(
+            "[01] Root Shell"
+            "[02] Chronos Shell"
+            "[03] Crosh"
+            "[04] Plugins"
+            "[05] Install plugins"
+            "[06] Uninstall plugins"
+            "[07] Powerwash"
+            "[08] Emergency Revert & Re-Enroll"
+            "[09] Soft Disable Extensions"
+            "[10] Hard Disable Extensions"
+            "[11] Hard Enable Extensions"
+            "[12] Auto Disable Extensions"
+            "[13] Edit Pollen"
+            "[14] Install Crouton"
+            "[15] Start Crouton"
+            "[16] Enable dev_boot_usb"
+            "[17] Disable dev_boot_usb"
+            "[18] Set mushm password"
+            "[19] Remove mushm password"
+            "[20] Reboot (5s)"
+
+            "[21] ${RED}[EXPERIMENTAL]${RESET} Gentoo Bootstrap"
+            "[22] ${RED}[EXPERIMENTAL]${RESET} Update ChromeOS"
+            "[23] ${RED}[EXPERIMENTAL]${RESET} Update Emergency Backup"
+            "[24] ${RED}[EXPERIMENTAL]${RESET} Restore Emergency Backup"
+            "[25] ${RED}[EXPERIMENTAL]${RESET} Install Chromebrew"
+
+            "[26] Firmware Utility"
+            "[27] Update Murkmod"
+            "[28] Update MushM"
+            "[29] Backup Manager"
+
+            "[30] ${RED}[EXPERIMENTAL]${RESET} Install Arch Chroot"
+            "[31] ${RED}[EXPERIMENTAL]${RESET} Install Gento Dev Env"
+        )
+
+        half=$(( (${#options[@]} + 1) / 2 ))
+        col_width=48
+
+        for ((i=0; i<half; i++)); do
+            left="${options[i]}"
+            right="${options[i+half]}"
+
+            left_clean=$(strip "$left")
+            pad=$((col_width - ${#left_clean}))
+
+            printf "  %b%*s%b\n" "$left" "$pad" "" "$right"
+        done
+
+        echo
+        echo "${CYAN}╠${border}╣${RESET}"
+
+        printf "${MAGENTA}${BOLD}Select option${RESET} ➜ "
+        read -r choice
+        echo
+
         case "$choice" in
-        1) runjob doas bash ;;
-        2) runjob doas "cd /home/chronos; sudo -i -u chronos" ;;
-        3) runjob /usr/bin/crosh.old ;;
-        4) runjob show_plugins ;;
-        5) runjob install_plugins ;;
-        6) runjob uninstall_plugins ;;
-        7) runjob powerwash ;;
-        8) runjob revert ;;
-        9) runjob softdisableext ;;
-        10) runjob harddisableext ;;
-        11) runjob hardenableext ;;
-        12) runjob autodisableexts ;;
-        13) runjob edit_pollen ;;
-        14) runjob install_crouton ;;
-        15) runjob run_crouton ;;
-        16) runjob enable_dev_boot_usb ;;
-        17) runjob disable_dev_boot_usb ;;
-        18) runjob set_passwd ;;
-        19) runjob remove_passwd ;;
-        20) runjob reboot ;;
-        21) runjob attempt_dev_install ;;
-        22) runjob attempt_chromeos_update ;;
-        23) runjob attempt_backup_update ;;
-        24) runjob attempt_restore_backup_backup ;;
-        25) runjob attempt_chromebrew_install ;;
-        26) runjob run_firmware_util ;;
-        27) runjob do_updates && exit 0 ;;
-        28) runjob do_mushm_update ;;
-        29) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.py ;;
-        29) runjob arch ;;
-        29) runjob gento ;;
-        400) runjob do_dev_updates && exit 0 ;;
-        101) runjob hard_disable_nokill ;;
-        111) runjob hard_enable_nokill ;;
-        112) runjob ext_purge ;;
-        113) runjob list_plugins ;;
-        114) runjob install_plugin_legacy ;;
-        115) runjob uninstall_plugin_legacy ;;
-        201) runjob api_read_file ;;
-        202) runjob api_write_file ;;
-        203) runjob api_append_file ;;
-        204) runjob api_touch_file ;;
-        205) runjob api_create_dir ;;
-        206) runjob api_rm_file ;;
-        207) runjob api_rm_dir ;;
-        208) runjob api_ls_dir ;;
-        209) runjob api_cd ;;
-    
-        *) echo && echo "Invalid option." && echo ;;
+            1|01) runjob doas bash ;;
+            2|02) runjob doas "cd /home/chronos; sudo -i -u chronos" ;;
+            3|03) runjob /usr/bin/crosh.old ;;
+            4|04) runjob show_plugins ;;
+            5|05) runjob install_plugins ;;
+            6|06) runjob uninstall_plugins ;;
+            7|07) runjob powerwash ;;
+            8|08) runjob revert ;;
+            9|09) runjob softdisableext ;;
+            10) runjob harddisableext ;;
+            11) runjob hardenableext ;;
+            12) runjob autodisableexts ;;
+            13) runjob edit_pollen ;;
+            14) runjob install_crouton ;;
+            15) runjob run_crouton ;;
+            16) runjob enable_dev_boot_usb ;;
+            17) runjob disable_dev_boot_usb ;;
+            18) runjob set_passwd ;;
+            19) runjob remove_passwd ;;
+            20) runjob reboot ;;
+
+            21) runjob attempt_dev_install ;;
+            22) runjob attempt_chromeos_update ;;
+            23) runjob attempt_backup_update ;;
+            24) runjob attempt_restore_backup_backup ;;
+            25) runjob attempt_chromebrew_install ;;
+
+            26) runjob run_firmware_util ;;
+            27) runjob do_updates && exit 0 ;;
+            28) runjob do_mushm_update ;;
+            29) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.py ;;
+
+            30) runjob arch ;;
+            31) runjob gento ;;
+
+            400) runjob do_dev_updates && exit 0 ;;
+            101) runjob hard_disable_nokill ;;
+            111) runjob hard_enable_nokill ;;
+            112) runjob ext_purge ;;
+            113) runjob list_plugins ;;
+            114) runjob install_plugin_legacy ;;
+            115) runjob uninstall_plugin_legacy ;;
+            201) runjob api_read_file ;;
+            202) runjob api_write_file ;;
+            203) runjob api_append_file ;;
+            204) runjob api_touch_file ;;
+            205) runjob api_create_dir ;;
+            206) runjob api_rm_file ;;
+            207) runjob api_rm_dir ;;
+            208) runjob api_ls_dir ;;
+            209) runjob api_cd ;;
+
+            *)
+                echo "${RED}Invalid option.${RESET}"
+                sleep 1
+                ;;
         esac
     done
 }
