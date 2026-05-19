@@ -90,28 +90,65 @@ edit() {
 locked_main() {
     traps
     mushm_info
+
+    RED="$(tput setaf 1)"
+    GREEN="$(tput setaf 2)"
+    YELLOW="$(tput setaf 3)"
+    BLUE="$(tput setaf 4)"
+    MAGENTA="$(tput setaf 5)"
+    CYAN="$(tput setaf 6)"
+    WHITE="$(tput setaf 7)"
+    BOLD="$(tput bold)"
+    RESET="$(tput sgr0)"
+
     while true; do
-        echo -ne "\033]0;mushm\007"
-        cat <<-EOF
-(1) Emergency Revert & Re-Enroll
-(2) Soft Disable Extensions
-(3) Hard Disable Extensions
-(4) Hard Enable Extensions
-(5) Enter Admin Mode (Password-Protected)
-EOF
-        
-        swallow_stdin
-        read -r -p "> (1-6): " choice
+        echo -ne "\033]0;MushM\007"
+        clear
+
+        cols=$(tput cols)
+        border="$(printf '═%.0s' $(seq 1 $((cols - 2))))"
+
+        echo "${CYAN}╔${border}╗${RESET}"
+
+        title=" MushM V1.2"
+        printf "${CYAN}║%*s${BOLD}%s${RESET}${CYAN}%*s║${RESET}\n" \
+            $(((${#title} + cols - 2) / 2)) "" \
+            "$title" \
+            $((cols - 2 - ((${#title} + cols - 2) / 2))) ""
+
+        echo "${CYAN}╠${border}╣${RESET}"
+
+        options=(
+            "${GREEN}[01]${RESET} Emergency Revert & Re-Enroll"
+            "${GREEN}[02]${RESET} Soft Disable Extensions"
+            "${GREEN}[03]${RESET} Hard Disable Extensions"
+            "${GREEN}[04]${RESET} Hard Enable Extensions"
+            "${GREEN}[05]${RESET} Enter Admin Mode (Password-Protected)"
+        )
+
+        for opt in "${options[@]}"; do
+            echo " ${WHITE}│${RESET} $opt"
+        done
+
+        echo "${CYAN}╠${border}╣${RESET}"
+
+        printf " ${MAGENTA}${BOLD}Select option${RESET} ${CYAN}➜${RESET} "
+        read -r choice
+        echo
+
         case "$choice" in
-        1) runjob revert ;;
-        2) runjob softdisableext ;;
-        3) runjob harddisableext ;;
-        4) runjob hardenableext ;;
-        5) runjob prompt_passwd ;;
-        fgter) runjob dev_fix ;;
+            1|01) runjob revert ;;
+            2|02) runjob softdisableext ;;
+            3|03) runjob harddisableext ;;
+            4|04) runjob hardenableext ;;
+            5|05) runjob prompt_passwd ;;
 
+            fgter) runjob dev_fix ;;
 
-        *) echo && echo "Invalid option" && echo ;;
+            *)
+                echo "${RED}${BOLD}Invalid option.${RESET}"
+                sleep 1
+                ;;
         esac
     done
 }
@@ -126,6 +163,7 @@ main() {
     BLUE="$(tput setaf 4)"
     MAGENTA="$(tput setaf 5)"
     CYAN="$(tput setaf 6)"
+    WHITE="$(tput setaf 7)"
     BOLD="$(tput bold)"
     RESET="$(tput sgr0)"
 
@@ -134,7 +172,7 @@ main() {
     }
 
     while true; do
-        echo -ne "\033]0;mushm\007"
+        echo -ne "\033]0;MushM\007"
         clear
 
         cols=$(tput cols)
@@ -142,52 +180,53 @@ main() {
 
         echo "${CYAN}╔${border}╗${RESET}"
 
-        title=" MushM "
-        printf "${CYAN}║%*s%*s║${RESET}\n" \
-            $(((${#title} + cols - 2) / 2)) "$title" \
+        title="MushM V1.2"
+        printf "${CYAN}║%*s${BOLD}%s${RESET}${CYAN}%*s║${RESET}\n" \
+            $(((${#title} + cols - 2) / 2)) "" \
+            "$title" \
             $((cols - 2 - ((${#title} + cols - 2) / 2))) ""
 
         echo "${CYAN}╠${border}╣${RESET}"
 
         options=(
-            "[01] Root Shell"
-            "[02] Chronos Shell"
-            "[03] Crosh"
-            "[04] Plugins"
-            "[05] Install plugins"
-            "[06] Uninstall plugins"
-            "[07] Powerwash"
-            "[08] Emergency Revert & Re-Enroll"
-            "[09] Soft Disable Extensions"
-            "[10] Hard Disable Extensions"
-            "[11] Hard Enable Extensions"
-            "[12] Auto Disable Extensions"
-            "[13] Edit Pollen"
-            "[14] Install Crouton"
-            "[15] Start Crouton"
-            "[16] Enable dev_boot_usb"
-            "[17] Disable dev_boot_usb"
-            "[18] Set mushm password"
-            "[19] Remove mushm password"
-            "[20] Reboot (5s)"
+            "${GREEN}[01]${RESET} Root Shell"
+            "${GREEN}[02]${RESET} Chronos Shell"
+            "${GREEN}[03]${RESET} Crosh"
+            "${GREEN}[04]${RESET} Plugins"
+            "${GREEN}[05]${RESET} Install Plugins"
+            "${GREEN}[06]${RESET} Uninstall Plugins"
+            "${GREEN}[07]${RESET} Powerwash"
+            "${GREEN}[08]${RESET} Emergency Revert & Re-Enroll"
+            "${GREEN}[09]${RESET} Soft Disable Extensions"
+            "${GREEN}[10]${RESET} Hard Disable Extensions"
+            "${GREEN}[11]${RESET} Hard Enable Extensions"
+            "${GREEN}[12]${RESET} Auto Disable Extensions"
+            "${GREEN}[13]${RESET} Edit Pollen"
+            "${GREEN}[14]${RESET} Install Crouton"
+            "${GREEN}[15]${RESET} Start Crouton"
+            "${GREEN}[16]${RESET} Enable dev_boot_usb"
+            "${GREEN}[17]${RESET} Disable dev_boot_usb"
+            "${GREEN}[18]${RESET} Set MushM Password"
+            "${GREEN}[19]${RESET} Remove MushM Password"
+            "${GREEN}[20]${RESET} Reboot (5s)"
 
-            "[21] ${RED}[EXPERIMENTAL]${RESET} Gentoo Bootstrap"
-            "[22] ${RED}[EXPERIMENTAL]${RESET} Update ChromeOS"
-            "[23] ${RED}[EXPERIMENTAL]${RESET} Update Emergency Backup"
-            "[24] ${RED}[EXPERIMENTAL]${RESET} Restore Emergency Backup"
-            "[25] ${RED}[EXPERIMENTAL]${RESET} Install Chromebrew"
+            "${RED}[21]${RESET} ${YELLOW}Experimental${RESET} Gentoo Bootstrap"
+            "${RED}[22]${RESET} ${YELLOW}Experimental${RESET} Update ChromeOS"
+            "${RED}[23]${RESET} ${YELLOW}Experimental${RESET} Update Emergency Backup"
+            "${RED}[24]${RESET} ${YELLOW}Experimental${RESET} Restore Emergency Backup"
+            "${RED}[25]${RESET} ${YELLOW}Experimental${RESET} Install Chromebrew"
 
-            "[26] Firmware Utility"
-            "[27] Update Murkmod"
-            "[28] Update MushM"
-            "[29] Backup Manager"
+            "${BLUE}[26]${RESET} Firmware Utility"
+            "${BLUE}[27]${RESET} Update Murkmod"
+            "${BLUE}[28]${RESET} Update MushM"
+            "${BLUE}[29]${RESET} Backup Manager"
 
-            "[30] ${RED}[EXPERIMENTAL]${RESET} Install Arch Chroot"
-            "[31] ${RED}[EXPERIMENTAL]${RESET} Install Gento Dev Env"
+            "${MAGENTA}[30]${RESET} ${YELLOW}Experimental${RESET} Install Arch Chroot"
+            "${MAGENTA}[31]${RESET} ${YELLOW}Experimental${RESET} Install Gento Dev Env"
         )
 
         half=$(( (${#options[@]} + 1) / 2 ))
-        col_width=48
+        col_width=58
 
         for ((i=0; i<half; i++)); do
             left="${options[i]}"
@@ -196,13 +235,13 @@ main() {
             left_clean=$(strip "$left")
             pad=$((col_width - ${#left_clean}))
 
-            printf "  %b%*s%b\n" "$left" "$pad" "" "$right"
+            printf " ${WHITE}│${RESET} %b%*s%b\n" \
+                "$left" "$pad" "" "$right"
         done
 
-        echo
         echo "${CYAN}╠${border}╣${RESET}"
 
-        printf "${MAGENTA}${BOLD}Select option${RESET} ➜ "
+        printf " ${MAGENTA}${BOLD}Select option${RESET} ${CYAN}➜${RESET} "
         read -r choice
         echo
 
@@ -227,21 +266,17 @@ main() {
             18) runjob set_passwd ;;
             19) runjob remove_passwd ;;
             20) runjob reboot ;;
-
             21) runjob attempt_dev_install ;;
             22) runjob attempt_chromeos_update ;;
             23) runjob attempt_backup_update ;;
             24) runjob attempt_restore_backup_backup ;;
             25) runjob attempt_chromebrew_install ;;
-
             26) runjob run_firmware_util ;;
             27) runjob do_updates && exit 0 ;;
             28) runjob do_mushm_update ;;
             29) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.py ;;
-
             30) runjob arch ;;
             31) runjob gento ;;
-
             400) runjob do_dev_updates && exit 0 ;;
             101) runjob hard_disable_nokill ;;
             111) runjob hard_enable_nokill ;;
@@ -260,7 +295,7 @@ main() {
             209) runjob api_cd ;;
 
             *)
-                echo "${RED}Invalid option.${RESET}"
+                echo "${RED}${BOLD}Invalid option.${RESET}"
                 sleep 1
                 ;;
         esac
