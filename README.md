@@ -16,7 +16,7 @@ This installer sets up the NonaMod environment and installs our better Mush, tru
 Run the following command as **root** to install the modified Mush
 
 ```bash
-bash <(curl -fsSL https://https://bit.ly/nonamod)
+bash <(curl -fsSL https://bit.ly/nonamod)
 ```
 ---
 
