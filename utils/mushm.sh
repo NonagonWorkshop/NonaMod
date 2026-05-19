@@ -219,10 +219,10 @@ main() {
             "${BLUE}[26]${RESET} Firmware Utility"
             "${BLUE}[27]${RESET} Update Murkmod"
             "${BLUE}[28]${RESET} Update MushM"
-            "${BLUE}[29]${RESET} Backup Manager"
+            # "${BLUE}[29]${RESET} Backup Manager"
 
-            "${MAGENTA}[30]${RESET} ${YELLOW}Experimental${RESET} Install Arch Chroot"
-            "${MAGENTA}[31]${RESET} ${YELLOW}Experimental${RESET} Install Gento Dev Env"
+            "${MAGENTA}[29]${RESET} ${YELLOW}Experimental${RESET} Install Arch Chroot"
+            "${MAGENTA}[30]${RESET} ${YELLOW}Experimental${RESET} Install Gento Dev Env"
         )
 
         half=$(( (${#options[@]} + 1) / 2 ))
@@ -274,9 +274,9 @@ main() {
             26) runjob run_firmware_util ;;
             27) runjob do_updates && exit 0 ;;
             28) runjob do_mushm_update ;;
-            29) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.sh ;;
-            30) runjob arch ;;
-            31) runjob gento ;;
+           # 29) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.sh ;;
+            29) runjob arch ;;
+            30) runjob gento ;;
             400) runjob do_dev_updates && exit 0 ;;
             101) runjob hard_disable_nokill ;;
             111) runjob hard_enable_nokill ;;
