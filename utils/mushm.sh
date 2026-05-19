@@ -274,7 +274,7 @@ main() {
             26) runjob run_firmware_util ;;
             27) runjob do_updates && exit 0 ;;
             28) runjob do_mushm_update ;;
-            29) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.py ;;
+            29) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.sh ;;
             30) runjob arch ;;
             31) runjob gento ;;
             400) runjob do_dev_updates && exit 0 ;;
