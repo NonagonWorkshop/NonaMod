@@ -22,10 +22,7 @@ BOOTMSG_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/util
 VERSION_URL="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/version.txt"
 WATCHDOG="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/watchdog/watchdog.sh"
 PY_BASE="https://github.com/astral-sh/python-build-standalone/releases/download/20260211"
-WDCONFIG="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/watchdog/watchdog.conf"
-WDCDIR="/etc/init/watchdog.conf"
-RECOVERY="https://raw.githubusercontent.com/NonagonWorkshop/Nonamod/main/utils/recovery/recovery.sh"
-RECOVDIR="/mnt/stateful_partition/murkmod/recovery/recovery/sh"
+
 
 
 
@@ -108,11 +105,6 @@ install "$BOOTMSG_URL" "$BOOT"
 
 log "Installing Python."
 install_python
-
-log "Installing Configs."
-install "$WATCHDOG" "$WATCHDOGDIR"
-install "$WDCONFIG" "$WDCDIR"
-install "$RECOVERY" "$RECOVDIR"
 
 log "Saving version."
 curl -fsSL "$VERSION_URL" -o "$VERFILE" || error "Failed to save version"
