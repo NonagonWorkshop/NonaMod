@@ -224,8 +224,9 @@ games() {
     read -r -p "> (1 - 2): "
     case "$CHOOESGAM" in
     1) curl -fsSL https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/main/games/tetris.sh ;;
-    2) python3 && run_bashcraft_gethib
-    
+    2) python3 && run_bashcraft_gethib ;;
+
+    *) echo && echo "No options for that, some will be added soon!" && echo ;;
 }
 
 run_bashcraft_gethib() {
