@@ -215,7 +215,7 @@ doas "bash <(curl -fsSL https://raw.githubusercontent.com/shadowed1/Chard/main/G
 }
 
 games() {
-    traps
+        traps
     echo "Welcome to the Games Menu! Select an option
     (1) Bashcraft (REQUIRES PYTHON)
     (2) Tetris
@@ -223,10 +223,12 @@ games() {
     "
 
     swallow_stdin
-    read -r -p "> (1 - 2): "
+    read -r -p "> (1 - 2): " CHOOESGAM
+
+    
     case "$CHOOESGAM" in
-    1) curl -fsSL https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/main/games/tetris.sh ;;
-    2) echo "still working on the pythong shit." ;;
+    1) echo "still working on the pythong shit." ;;
+    2) curl -fsSL https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/main/games/tetris.sh | bash ;;
 
     *) echo && echo "No options for that, some will be added soon!" && echo ;;
 
