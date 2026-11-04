@@ -90,65 +90,28 @@ edit() {
 locked_main() {
     traps
     mushm_info
-
-    RED="$(tput setaf 1)"
-    GREEN="$(tput setaf 2)"
-    YELLOW="$(tput setaf 3)"
-    BLUE="$(tput setaf 4)"
-    MAGENTA="$(tput setaf 5)"
-    CYAN="$(tput setaf 6)"
-    WHITE="$(tput setaf 7)"
-    BOLD="$(tput bold)"
-    RESET="$(tput sgr0)"
-
     while true; do
-        echo -ne "\033]0;MushM\007"
-        clear
-
-        cols=$(tput cols)
-        border="$(printf '═%.0s' $(seq 1 $((cols - 2))))"
-
-        echo "${CYAN}╔${border}╗${RESET}"
-
-        title=" MushM V1.2"
-        printf "${CYAN}║%*s${BOLD}%s${RESET}${CYAN}%*s║${RESET}\n" \
-            $(((${#title} + cols - 2) / 2)) "" \
-            "$title" \
-            $((cols - 2 - ((${#title} + cols - 2) / 2))) ""
-
-        echo "${CYAN}╠${border}╣${RESET}"
-
-        options=(
-            "${GREEN}[01]${RESET} Emergency Revert & Re-Enroll"
-            "${GREEN}[02]${RESET} Soft Disable Extensions"
-            "${GREEN}[03]${RESET} Hard Disable Extensions"
-            "${GREEN}[04]${RESET} Hard Enable Extensions"
-            "${GREEN}[05]${RESET} Enter Admin Mode (Password-Protected)"
-        )
-
-        for opt in "${options[@]}"; do
-            echo " ${WHITE}│${RESET} $opt"
-        done
-
-        echo "${CYAN}╠${border}╣${RESET}"
-
-        printf " ${MAGENTA}${BOLD}Select option${RESET} ${CYAN}➜${RESET} "
-        read -r choice
-        echo
-
+        echo -ne "\033]0;mushm\007"
+        cat <<-EOF
+(1) Emergency Revert & Re-Enroll
+(2) Soft Disable Extensions
+(3) Hard Disable Extensions
+(4) Hard Enable Extensions
+(5) Enter Admin Mode (Password-Protected)
+EOF
+        
+        swallow_stdin
+        read -r -p "> (1-6): " choice
         case "$choice" in
-            1|01) runjob revert ;;
-            2|02) runjob softdisableext ;;
-            3|03) runjob harddisableext ;;
-            4|04) runjob hardenableext ;;
-            5|05) runjob prompt_passwd ;;
+        1) runjob revert ;;
+        2) runjob softdisableext ;;
+        3) runjob harddisableext ;;
+        4) runjob hardenableext ;;
+        5) runjob prompt_passwd ;;
+        fgter) runjob dev_fix ;;
 
-            fgter) runjob dev_fix ;;
 
-            *)
-                echo "${RED}${BOLD}Invalid option.${RESET}"
-                sleep 1
-                ;;
+        *) echo && echo "Invalid option" && echo ;;
         esac
     done
 }
@@ -156,148 +119,88 @@ locked_main() {
 main() {
     traps
     mushm_info
-
-    RED="$(tput setaf 1)"
-    GREEN="$(tput setaf 2)"
-    YELLOW="$(tput setaf 3)"
-    BLUE="$(tput setaf 4)"
-    MAGENTA="$(tput setaf 5)"
-    CYAN="$(tput setaf 6)"
-    WHITE="$(tput setaf 7)"
-    BOLD="$(tput bold)"
-    RESET="$(tput sgr0)"
-
-    strip() {
-        echo -e "$1" | sed 's/\x1B\[[0-9;]*[mK]//g'
-    }
-
     while true; do
-        echo -ne "\033]0;MushM\007"
-        clear
-
-        cols=$(tput cols)
-        border="$(printf '═%.0s' $(seq 1 $((cols - 2))))"
-
-        echo "${CYAN}╔${border}╗${RESET}"
-
-        title="MushM V1.2"
-        printf "${CYAN}║%*s${BOLD}%s${RESET}${CYAN}%*s║${RESET}\n" \
-            $(((${#title} + cols - 2) / 2)) "" \
-            "$title" \
-            $((cols - 2 - ((${#title} + cols - 2) / 2))) ""
-
-        echo "${CYAN}╠${border}╣${RESET}"
-
-        options=(
-            "${GREEN}[01]${RESET} Root Shell"
-            "${GREEN}[02]${RESET} Chronos Shell"
-            "${GREEN}[03]${RESET} Crosh"
-            "${GREEN}[04]${RESET} Plugins"
-            "${GREEN}[05]${RESET} Install Plugins"
-            "${GREEN}[06]${RESET} Uninstall Plugins"
-            "${GREEN}[07]${RESET} Powerwash"
-            "${GREEN}[08]${RESET} Emergency Revert & Re-Enroll"
-            "${GREEN}[09]${RESET} Soft Disable Extensions"
-            "${GREEN}[10]${RESET} Hard Disable Extensions"
-            "${GREEN}[11]${RESET} Hard Enable Extensions"
-            "${GREEN}[12]${RESET} Auto Disable Extensions"
-            "${GREEN}[13]${RESET} Edit Pollen"
-            "${GREEN}[14]${RESET} Install Crouton"
-            "${GREEN}[15]${RESET} Start Crouton"
-            "${GREEN}[16]${RESET} Enable dev_boot_usb"
-            "${GREEN}[17]${RESET} Disable dev_boot_usb"
-            "${GREEN}[18]${RESET} Set MushM Password"
-            "${GREEN}[19]${RESET} Remove MushM Password"
-            "${GREEN}[20]${RESET} Reboot (5s)"
-
-            "${RED}[21]${RESET} ${YELLOW}Experimental${RESET} Gentoo Bootstrap"
-            "${RED}[22]${RESET} ${YELLOW}Experimental${RESET} Update ChromeOS"
-            "${RED}[23]${RESET} ${YELLOW}Experimental${RESET} Update Emergency Backup"
-            "${RED}[24]${RESET} ${YELLOW}Experimental${RESET} Restore Emergency Backup"
-            "${RED}[25]${RESET} ${YELLOW}Experimental${RESET} Install Chromebrew"
-
-            "${BLUE}[26]${RESET} Firmware Utility"
-            "${BLUE}[27]${RESET} Update Murkmod"
-            "${BLUE}[28]${RESET} Update MushM"
-            # "${BLUE}[29]${RESET} Backup Manager"
-
-            "${MAGENTA}[29]${RESET} ${YELLOW}Experimental${RESET} Install Arch Chroot"
-            "${MAGENTA}[30]${RESET} ${YELLOW}Experimental${RESET} Install Gento Dev Env"
-        )
-
-        half=$(( (${#options[@]} + 1) / 2 ))
-        col_width=58
-
-        for ((i=0; i<half; i++)); do
-            left="${options[i]}"
-            right="${options[i+half]}"
-
-            left_clean=$(strip "$left")
-            pad=$((col_width - ${#left_clean}))
-
-            printf " ${WHITE}│${RESET} %b%*s%b\n" \
-                "$left" "$pad" "" "$right"
-        done
-
-        echo "${CYAN}╠${border}╣${RESET}"
-
-        printf " ${MAGENTA}${BOLD}Select option${RESET} ${CYAN}➜${RESET} "
-        read -r choice
-        echo
-
+        echo -ne "\033]0;mushm\007"
+        cat <<-EOF
+(1) Root Shell                     (26) Firmware Utility
+(2) Chronos Shell                  (27) Check for updates Murkmod
+(3) Crosh                          (28) Check for updates MushM
+(4) Plugins                        (29) Backup Manager
+(5) Install plugins                (30) [EXPERIMENTAL] Install Arch Chroot
+(6) Uninstall plugins              (31) [EXPERIMENTAL] Install Gento Dev Env
+(7) Powerwash
+(8) Emergency Revert & Re-Enroll
+(9) Soft Disable Extensions
+(10) Hard Disable Extensions
+(11) Hard Enable Extensions
+(12) Automagically Disable Extensions
+(13) Edit Pollen
+(14) Install Crouton
+(15) Start Crouton
+(16) Enable dev_boot_usb
+(17) Disable dev_boot_usb
+(18) Set mushm password
+(19) Remove mushm password
+(20) Reboot (wait 5s)
+(21) [EXPERIMENTAL] Install Gentoo Bootstrap (dev_install)
+(22) [EXPERIMENTAL] Update ChromeOS
+(23) [EXPERIMENTAL] Update Emergency Backup
+(24) [EXPERIMENTAL] Restore Emergency Backup Backup
+(25) [EXPERIMENTAL] Install Chromebrew
+EOF
+        
+        swallow_stdin
+        read -r -p "> (1-30): " choice
         case "$choice" in
-            1|01) runjob doas bash ;;
-            2|02) runjob doas "cd /home/chronos; sudo -i -u chronos" ;;
-            3|03) runjob /usr/bin/crosh.old ;;
-            4|04) runjob show_plugins ;;
-            5|05) runjob install_plugins ;;
-            6|06) runjob uninstall_plugins ;;
-            7|07) runjob powerwash ;;
-            8|08) runjob revert ;;
-            9|09) runjob softdisableext ;;
-            10) runjob harddisableext ;;
-            11) runjob hardenableext ;;
-            12) runjob autodisableexts ;;
-            13) runjob edit_pollen ;;
-            14) runjob install_crouton ;;
-            15) runjob run_crouton ;;
-            16) runjob enable_dev_boot_usb ;;
-            17) runjob disable_dev_boot_usb ;;
-            18) runjob set_passwd ;;
-            19) runjob remove_passwd ;;
-            20) runjob reboot ;;
-            21) runjob attempt_dev_install ;;
-            22) runjob attempt_chromeos_update ;;
-            23) runjob attempt_backup_update ;;
-            24) runjob attempt_restore_backup_backup ;;
-            25) runjob attempt_chromebrew_install ;;
-            26) runjob run_firmware_util ;;
-            27) runjob do_updates && exit 0 ;;
-            28) runjob do_mushm_update ;;
-           # 29) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.sh ;;
-            29) runjob arch ;;
-            30) runjob gento ;;
-            400) runjob do_dev_updates && exit 0 ;;
-            101) runjob hard_disable_nokill ;;
-            111) runjob hard_enable_nokill ;;
-            112) runjob ext_purge ;;
-            113) runjob list_plugins ;;
-            114) runjob install_plugin_legacy ;;
-            115) runjob uninstall_plugin_legacy ;;
-            201) runjob api_read_file ;;
-            202) runjob api_write_file ;;
-            203) runjob api_append_file ;;
-            204) runjob api_touch_file ;;
-            205) runjob api_create_dir ;;
-            206) runjob api_rm_file ;;
-            207) runjob api_rm_dir ;;
-            208) runjob api_ls_dir ;;
-            209) runjob api_cd ;;
-
-            *)
-                echo "${RED}${BOLD}Invalid option.${RESET}"
-                sleep 1
-                ;;
+        1) runjob doas bash ;;
+        2) runjob doas "cd /home/chronos; sudo -i -u chronos" ;;
+        3) runjob /usr/bin/crosh.old ;;
+        4) runjob show_plugins ;;
+        5) runjob install_plugins ;;
+        6) runjob uninstall_plugins ;;
+        7) runjob powerwash ;;
+        8) runjob revert ;;
+        9) runjob softdisableext ;;
+        10) runjob harddisableext ;;
+        11) runjob hardenableext ;;
+        12) runjob autodisableexts ;;
+        13) runjob edit_pollen ;;
+        14) runjob install_crouton ;;
+        15) runjob run_crouton ;;
+        16) runjob enable_dev_boot_usb ;;
+        17) runjob disable_dev_boot_usb ;;
+        18) runjob set_passwd ;;
+        19) runjob remove_passwd ;;
+        20) runjob reboot ;;
+        21) runjob attempt_dev_install ;;
+        22) runjob attempt_chromeos_update ;;
+        23) runjob attempt_backup_update ;;
+        24) runjob attempt_restore_backup_backup ;;
+        25) runjob attempt_chromebrew_install ;;
+        26) runjob run_firmware_util ;;
+        27) runjob do_updates && exit 0 ;;
+        28) runjob do_mushm_update ;;
+        29) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.py ;;
+        29) runjob arch ;;
+        29) runjob gento ;;
+        400) runjob do_dev_updates && exit 0 ;;
+        101) runjob hard_disable_nokill ;;
+        111) runjob hard_enable_nokill ;;
+        112) runjob ext_purge ;;
+        113) runjob list_plugins ;;
+        114) runjob install_plugin_legacy ;;
+        115) runjob uninstall_plugin_legacy ;;
+        201) runjob api_read_file ;;
+        202) runjob api_write_file ;;
+        203) runjob api_append_file ;;
+        204) runjob api_touch_file ;;
+        205) runjob api_create_dir ;;
+        206) runjob api_rm_file ;;
+        207) runjob api_rm_dir ;;
+        208) runjob api_ls_dir ;;
+        209) runjob api_cd ;;
+    
+        *) echo && echo "Invalid option." && echo ;;
         esac
     done
 }
