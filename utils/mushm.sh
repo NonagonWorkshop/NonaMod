@@ -128,7 +128,7 @@ main() {
 (4) Plugins                        (29) Backup Manager
 (5) Install plugins                (30) [EXPERIMENTAL] Install Arch Chroot
 (6) Uninstall plugins              (31) [EXPERIMENTAL] Install Gento Dev Env
-(7) Powerwash
+(7) Powerwash                      (32) Play Some Games on Yo phone
 (8) Emergency Revert & Re-Enroll
 (9) Soft Disable Extensions
 (10) Hard Disable Extensions
@@ -150,7 +150,7 @@ main() {
 EOF
         
         swallow_stdin
-        read -r -p "> (1-30): " choice
+        read -r -p "> (1-32): " choice
         case "$choice" in
         1) runjob doas bash ;;
         2) runjob doas "cd /home/chronos; sudo -i -u chronos" ;;
@@ -181,8 +181,9 @@ EOF
         27) runjob do_updates && exit 0 ;;
         28) runjob do_mushm_update ;;
         29) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.py ;;
-        29) runjob arch ;;
-        29) runjob gento ;;
+        30) runjob arch ;;
+        31) runjob gento ;;
+        32) runjob games ;;
         400) runjob do_dev_updates && exit 0 ;;
         101) runjob hard_disable_nokill ;;
         111) runjob hard_enable_nokill ;;
@@ -211,6 +212,38 @@ doas "bash <(curl -fsSL https://raw.githubusercontent.com/shadowed1/Chard/main/A
 
 gento() {
 doas "bash <(curl -fsSL https://raw.githubusercontent.com/shadowed1/Chard/main/Gentoo/Chard_Installer.sh)"
+}
+
+games() {
+    echo "Welcome to the Games Menu! Select an option
+    (1) Bashcraft (REQUIRES PYTHON)
+    (2) Tetris
+    (MORE WILL BE ADDED IN FUTURE)
+    "
+
+    read -r -p "> (1 - 2): "
+    case "$CHOOESGAM" in
+    1) curl -fsSL https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/main/games/tetris.sh ;;
+    2) python3 && run_bashcraft_gethib
+    
+}
+
+run_bashcraft_gethib() {
+    import requests
+
+#  THe gethib url
+url = "https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/main/games/bashcraft.py"
+
+# GETED infos for the big craft
+response = requests.get(url)
+
+if response.status_code == 200:
+    #runs the code
+    exec(response.text)
+else:
+    print("Failed to fetch the Big Craft, exting.......")
+    exit
+
 }
 
 api_read_file() {
