@@ -215,18 +215,23 @@ doas "bash <(curl -fsSL https://raw.githubusercontent.com/shadowed1/Chard/main/G
 }
 
 games() {
+    traps
     echo "Welcome to the Games Menu! Select an option
     (1) Bashcraft (REQUIRES PYTHON)
     (2) Tetris
     (MORE WILL BE ADDED IN FUTURE)
     "
 
+    swallow_stdin
     read -r -p "> (1 - 2): "
     case "$CHOOESGAM" in
     1) curl -fsSL https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/main/games/tetris.sh ;;
     2) python3 && run_bashcraft_gethib ;;
 
     *) echo && echo "No options for that, some will be added soon!" && echo ;;
+
+    esac
+done
 }
 
 run_bashcraft_gethib() {
