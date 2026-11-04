@@ -231,7 +231,6 @@ games() {
     *) echo && echo "No options for that, some will be added soon!" && echo ;;
 
     esac
-done
 }
 
 run_bashcraft_gethib() {
