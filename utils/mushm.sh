@@ -226,29 +226,11 @@ games() {
     read -r -p "> (1 - 2): "
     case "$CHOOESGAM" in
     1) curl -fsSL https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/main/games/tetris.sh ;;
-    2) python3 && run_bashcraft_gethib ;;
+    2) echo "still working on the pythong shit." ;;
 
     *) echo && echo "No options for that, some will be added soon!" && echo ;;
 
     esac
-}
-
-run_bashcraft_gethib() {
-    import requests
-
-#  THe gethib url
-url = "https://raw.githubusercontent.com/NonagonWorkshop/NonaMod/main/games/bashcraft.py"
-
-# GETED infos for the big craft
-response = requests.get(url)
-
-if response.status_code == 200:
-    #runs the code
-    exec(response.text)
-else:
-    print("Failed to fetch the Big Craft, exting.......")
-    exit
-
 }
 
 api_read_file() {
