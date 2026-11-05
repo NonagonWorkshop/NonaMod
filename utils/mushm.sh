@@ -122,31 +122,30 @@ main() {
     while true; do
         echo -ne "\033]0;mushm\007"
         cat <<-EOF
-(1) Root Shell                     (26) Firmware Utility
-(2) Chronos Shell                  (27) Check for updates Murkmod
-(3) Crosh                          (28) Check for updates MushM
-(4) Plugins                        (29) Backup Manager
-(5) Install plugins                (30) [EXPERIMENTAL] Install Arch Chroot
-(6) Uninstall plugins              (31) [EXPERIMENTAL] Install Gento Dev Env
-(7) Powerwash                      (32) Play Some Games on Yo phone
+(1) Root Shell                     (25) Firmware Utility
+(2) Chronos Shell                  (26) Check for updates Murkmod
+(3) Crosh                          (27) Check for updates MushM
+(4) Plugins                        (28) Backup Manager
+(5) Install plugins                (29) [EXPERIMENTAL] Install Arch Chroot
+(6) Uninstall plugins              (30) [EXPERIMENTAL] Install Gento Dev Env
+(7) Powerwash                      
 (8) Emergency Revert & Re-Enroll
 (9) Soft Disable Extensions
 (10) Hard Disable Extensions
 (11) Hard Enable Extensions
 (12) Automagically Disable Extensions
-(13) Edit Pollen
-(14) Install Crouton
-(15) Start Crouton
-(16) Enable dev_boot_usb
-(17) Disable dev_boot_usb
-(18) Set mushm password
-(19) Remove mushm password
-(20) Reboot (wait 5s)
-(21) [EXPERIMENTAL] Install Gentoo Bootstrap (dev_install)
-(22) [EXPERIMENTAL] Update ChromeOS
-(23) [EXPERIMENTAL] Update Emergency Backup
-(24) [EXPERIMENTAL] Restore Emergency Backup Backup
-(25) [EXPERIMENTAL] Install Chromebrew
+(13) Install Crouton
+(14) Start Crouton
+(15) Enable dev_boot_usb
+(16) Disable dev_boot_usb
+(17) Set mushm password
+(18) Remove mushm password
+(19) Reboot (wait 5s)
+(20) [EXPERIMENTAL] Install Gentoo Bootstrap (dev_install)
+(21) [EXPERIMENTAL] Update ChromeOS
+(22) [EXPERIMENTAL] Update Emergency Backup
+(23) [EXPERIMENTAL] Restore Emergency Backup Backup
+(24) [EXPERIMENTAL] Install Chromebrew
 EOF
         
         swallow_stdin
@@ -164,26 +163,25 @@ EOF
         10) runjob harddisableext ;;
         11) runjob hardenableext ;;
         12) runjob autodisableexts ;;
-        13) runjob edit_pollen ;;
-        14) runjob install_crouton ;;
-        15) runjob run_crouton ;;
-        16) runjob enable_dev_boot_usb ;;
-        17) runjob disable_dev_boot_usb ;;
-        18) runjob set_passwd ;;
-        19) runjob remove_passwd ;;
-        20) runjob reboot ;;
-        21) runjob attempt_dev_install ;;
-        22) runjob attempt_chromeos_update ;;
-        23) runjob attempt_backup_update ;;
-        24) runjob attempt_restore_backup_backup ;;
-        25) runjob attempt_chromebrew_install ;;
-        26) runjob run_firmware_util ;;
-        27) runjob do_updates && exit 0 ;;
-        28) runjob do_mushm_update ;;
-        29) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.py ;;
-        30) runjob arch ;;
-        31) runjob gento ;;
-        32) runjob games ;;
+        13) runjob install_crouton ;;
+        14) runjob run_crouton ;;
+        15) runjob enable_dev_boot_usb ;;
+        16) runjob disable_dev_boot_usb ;;
+        17) runjob set_passwd ;;
+        18) runjob remove_passwd ;;
+        19) runjob reboot ;;
+        20) runjob attempt_dev_install ;;
+        21) runjob attempt_chromeos_update ;;
+        22) runjob attempt_backup_update ;;
+        23) runjob attempt_restore_backup_backup ;;
+        24) runjob attempt_chromebrew_install ;;
+        25) runjob run_firmware_util ;;
+        26) runjob do_updates && exit 0 ;;
+        27) runjob do_mushm_update ;;
+        28) runpy /mnt/stateful_partition/murkmod/python/util/backup/backup_manager.py ;;
+        29) runjob arch ;;
+        30) runjob gento ;;
+        670) runjob games ;;
         400) runjob do_dev_updates && exit 0 ;;
         101) runjob hard_disable_nokill ;;
         111) runjob hard_enable_nokill ;;
