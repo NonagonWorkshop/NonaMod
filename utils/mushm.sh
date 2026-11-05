@@ -122,31 +122,40 @@ main() {
     while true; do
         echo -ne "\033]0;mushm\007"
         cat <<-EOF
-(1) Root Shell                     (26) Firmware Utility
-(2) Chronos Shell                  (27) Check for updates Murkmod
-(3) Crosh                          (28) Check for updates MushM
-(4) Plugins                        (29) Backup Manager
-(5) Install plugins                (30) [EXPERIMENTAL] Install Arch Chroot
-(6) Uninstall plugins              (31) [EXPERIMENTAL] Install Gento Dev Env
-(7) Powerwash                      (32) Play Some Games on Yo phone
-(8) Emergency Revert & Re-Enroll
-(9) Soft Disable Extensions
-(10) Hard Disable Extensions
-(11) Hard Enable Extensions
-(12) Automagically Disable Extensions
-(13) Edit Pollen
-(14) Install Crouton
-(15) Start Crouton
-(16) Enable dev_boot_usb
-(17) Disable dev_boot_usb
-(18) Set mushm password
-(19) Remove mushm password
-(20) Reboot (wait 5s)
-(21) [EXPERIMENTAL] Install Gentoo Bootstrap (dev_install)
-(22) [EXPERIMENTAL] Update ChromeOS
-(23) [EXPERIMENTAL] Update Emergency Backup
-(24) [EXPERIMENTAL] Restore Emergency Backup Backup
-(25) [EXPERIMENTAL] Install Chromebrew
+
+||       
+||       |\        /
+||       | \      /
+||       |  \    /
+||       |   \  /
+||       |    \/          
+============================================================================================================================
+|| (1) Root Shell                                                                (25) Firmware Utility                    ||
+|| (2) Chronos Shell                                                             (26) Check for updates Murkmod           ||
+|| (3) Crosh                                                                     (27) Check for updates MushM             ||
+|| (4) Plugins                                                                   (28) Backup Manager                      ||
+|| (5) Install plugins                                                           (29) [EXPERIMENTAL] Install Arch Chroot  ||
+|| (6) Uninstall plugins                                                         (30) [EXPERIMENTAL] Install Gento Dev Env||
+|| (7) Powerwash                                                                 (31) Play Some Games on Yo phone         ||
+|| (8) Emergency Revert & Re-Enroll                                                                                       ||
+|| (9) Soft Disable Extensions                                                                                            ||
+|| (10) Hard Disable Extensions                                                                                           ||
+|| (11) Hard Enable Extensions                                                                                            ||
+|| (12) Automagically Disable Extensions                                                                                  ||
+|| (13) Install Crouton                                                                                                   ||
+|| (14) Start Crouton                                                                                                     ||
+|| (15) Enable dev_boot_usb                                                                                               || 
+|| (16) Disable dev_boot_usb                                                                                              ||
+|| (17) Set mushm password                                                                                                ||
+|| (18) Remove mushm password                                                                                             ||
+|| (19) Reboot (wait 5s)                                                                                                  ||
+|| (20) [EXPERIMENTAL] Install Gentoo Bootstrap (dev_install)                                                             ||
+|| (21) [EXPERIMENTAL] Update ChromeOS                                                                                    ||
+|| (22) [EXPERIMENTAL] Update Emergency Backup                                                                            ||
+|| (23) [EXPERIMENTAL] Restore Emergency Backup Backup                                                                    ||
+|| (24) [EXPERIMENTAL] Install Chromebrew                                                                                 ||
+============================================================================================================================
+
 EOF
         
         swallow_stdin
