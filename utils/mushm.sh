@@ -221,11 +221,12 @@ games() {
     "
 
     swallow_stdin
-    read -r -p "> (1 - 2): " CHOOESGAM
+    read -r -p "> (1 - 2 q to quit): " CHOOESGAM
 
     case "$CHOOESGAM" in
     1) runpy bashcraft_py ;;
     2) runpy teteris_py ;;
+    q) exit ;;
 
     *) echo && echo "No options for that, some will be added soon!" && echo ;;
 
